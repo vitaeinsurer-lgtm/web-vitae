@@ -135,18 +135,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   backdrop-filter: blur(10px); color: var(--on-navy);
   border-top: 3px solid var(--gold);
 }
-.notice {
-  margin: 0; background: var(--gold); color: var(--gold-ink);
-  font: 400 .85rem/1.4 var(--f-body); padding-block: 7px; text-align: center;
-}
-.notice .wrap { display: block; }
-.notice strong { font-weight: 700; }
-.notice-short { display: none; }
-@media (max-width: 600px) {
-  .notice { font-size: .8rem; padding-block: 6px; }
-  .notice-long { display: none; }
-  .notice-short { display: inline; }
-}
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 70px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; min-height: 44px; }
 .brand-v { height: 36px; width: auto; }
