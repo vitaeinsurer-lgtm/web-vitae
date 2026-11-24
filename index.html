@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es-MX" data-type="service">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>VITAE Seguros de Vida</title>
+  <meta name="description" content="Seguro de vida Temporal, Vitalicio y Dotal Mixto. Calcula tu prima en línea con la tarifa de VITAE y envía tu cotización por WhatsApp.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="page-type" content="service">
+  <meta name="site-kind" content="other">
+  <meta name="theme-color" content="#0b1a35">
+  <meta property="og:title" content="VITAE Seguros de Vida">
+  <meta property="og:description" content="Calcula tu prima de seguro de vida en línea. Tu vida. Nuestro compromiso.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="img/vitae-v.png">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <p class="notice"><span class="wrap"><strong>Proyecto académico.</strong> <span class="notice-long">VITAE no es una aseguradora autorizada: sus seguros no se pueden contratar y las primas son ilustrativas.</span><span class="notice-short">No vende seguros reales.</span></span></p>
+    <div class="wrap header-row">
+      <a class="brand" href="#inicio" aria-label="VITAE Seguros de Vida, inicio">
+        <img class="brand-v" src="img/vitae-v.png" alt="" width="200" height="175">
+        <span class="brand-rule" aria-hidden="true"></span>
+        <img class="brand-word" src="img/vitae-wordmark.png" alt="VITAE" width="481" height="102">
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" id="nav-toggle">
+        <span class="sr">Abrir menú</span>
+        <span class="bars" aria-hidden="true"></span>
+      </button>
+      <nav class="nav" id="menu" aria-label="Principal">
+        <a href="#seguros">Seguros</a>
+        <a href="#coberturas">Coberturas</a>
+        <a href="#contratar">Cómo contratar</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#preguntas">Preguntas</a>
+        <a class="btn btn-gold btn-sm" href="#cotiza">Calcular mi prima</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- INICIO -->
+    <section class="hero" id="inicio" data-enter>
+      <svg class="hero-waves" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path class="w1" d="M1200 0H860c40 70 20 140 90 190 80 58 160 40 250 120z"/>
+        <path class="w2" d="M840 0c30 80 20 150 100 205 85 58 170 45 260 130"/>
+        <path class="w1" d="M0 640V470c60 10 110 60 140 110 20 35 50 50 90 60z"/>
+        <path class="w2" d="M0 440c75 15 125 70 160 125 25 40 60 60 110 75"/>
+      </svg>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 class="enter enter-1">Seguro de vida para proteger a tu familia</h1>
+          <p class="lede enter enter-2">Elige entre Temporal, Vitalicio o Dotal Mixto y calcula tu prima en línea con la tarifa técnica de VITAE.</p>
+          <div class="hero-cta enter enter-3">
+            <a class="btn btn-gold" href="#cotiza">Calcular mi prima</a>
+            <a class="btn btn-ghost" href="#seguros">Comparar seguros</a>
+          </div>
+          <ul class="proof enter enter-4" aria-label="VITAE en cifras">
+            <li><strong>17,640</strong><span>pólizas de vida en cartera</span></li>
+            <li><strong>MXN · USD · EUR</strong><span>la moneda que necesites</span></li>
+            <li><strong>5 a 40 años</strong><span>de plazo, en intervalos de cinco</span></li>
+          </ul>
+          <p class="motto enter enter-4">Tu vida. Nuestro compromiso.</p>
+        </div>
+
+        <aside class="sample enter enter-3" aria-label="Ejemplo de cotización de seguro de vida">
+          <p class="sample-title">Ejemplo de cotización</p>
+          <p class="sample-who">Mujer de 35 años, no fumadora · Vida Temporal a 20 años · Suma asegurada de $1,000,000 MXN</p>
+          <p class="sample-price"><span id="sample-anual">$923</span> <small>MXN al año</small></p>
+          <dl class="sample-rows">
+            <div><dt>Pago único equivalente</dt><dd id="sample-unica">$11,154 MXN</dd></div>
+            <div><dt>Pagos anuales</dt><dd>20</dd></div>
+          </dl>
+          <p class="sample-note">Prima neta estimada con la tarifa técnica de VITAE.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- SEGUROS -->
+    <section class="section" id="seguros">
+      <div class="wrap">
+        <header class="section-head">
+          <h2>Tres seguros de vida, tres formas de proteger</h2>
+          <p>Cambian en cuánto tiempo te protegen y en si, además de proteger, te ayudan a ahorrar.</p>
+        </header>
+
+        <div class="products">
+          <article class="product" id="temporal">
+            <div class="product-top">
+              <span class="tag">Protección por un plazo</span>
+              <h3>Vida Temporal</h3>
+              <p>Paga a tus beneficiarios si falleces durante el plazo que elegiste. Protege el ingreso de tu familia mientras más te necesita.</p>
+            </div>
+            <dl class="specs">
+              <div><dt>Ideal si</dt><dd>tienes hijos o personas que dependen de ti, o un crédito que no quieres heredar.</dd></div>
+              <div><dt>Plazo</dt><dd>De 5 a 40 años, en intervalos de cinco.</dd></div>
+              <div><dt>Al terminar el plazo</dt><dd>La protección concluye. Puedes contratar otra con una nueva evaluación.</dd></div>
+            </dl>
+            <a class="product-link" href="#cotiza" data-producto="temporal">Cotizar Temporal</a>
+          </article>
+
+          <article class="product" id="vitalicio">
+            <div class="product-top">
+              <span class="tag">Protección de por vida</span>
+              <h3>Vida Vitalicio</h3>
+              <p>Tu protección no tiene fecha de vencimiento. Pagas primas durante un periodo definido y la cobertura sigue contigo toda la vida.</p>
+            </div>
+            <dl class="specs">
+              <div><dt>Ideal si</dt><dd>quieres dejar un patrimonio seguro a tus beneficiarios, pase lo que pase y cuando pase.</dd></div>
+              <div><dt>Plazo</dt><dd>Toda la vida, mientras la póliza esté vigente.</dd></div>
+              <div><dt>Pago de primas</dt><dd>Durante el periodo que pactes en tu póliza.</dd></div>
+            </dl>
+            <a class="product-link" href="#cotiza" data-producto="vitalicio">Cotizar Vitalicio</a>
+          </article>
+
+          <article class="product" id="dotal">
+            <div class="product-top">
+              <span class="tag">Protección y ahorro</span>
+              <h3>Vida Dotal Mixto</h3>
+              <p>Protege a tu familia durante el plazo y, si llegas al final, el dinero es para ti. Una sola póliza para cuidar a los tuyos y cumplir una meta.</p>
+            </div>
+            <dl class="specs">
+              <div><dt>Ideal si</dt><dd>tienes una meta con fecha: la universidad de tus hijos, tu retiro o un proyecto propio.</dd></div>
+              <div><dt>Plazo</dt><dd>De 5 a 40 años, en intervalos de cinco.</dd></div>
+              <div><dt>Al terminar el plazo</dt><dd>Recibes la suma asegurada por supervivencia.</dd></div>
+            </dl>
+            <a class="product-link" href="#cotiza" data-producto="dotal">Cotizar Dotal Mixto</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- LÍNEA DE VIDA (momento interactivo) -->
+    <section class="section section-tint" id="linea">
+      <div class="wrap lifeline-grid">
+        <header class="section-head">
+          <h2>Tu línea de vida con cada seguro</h2>
+          <p>Mueve tu edad y el plazo para ver hasta cuándo te protege cada seguro y cuándo te paga el Dotal Mixto.</p>
+          <div class="ll-controls">
+            <label for="ll-edad">Tu edad</label>
+            <input type="range" id="ll-edad" min="18" max="75" step="1" value="35">
+            <output id="ll-edad-out" for="ll-edad">35 años</output>
+            <label for="ll-plazo">Plazo</label>
+            <input type="range" id="ll-plazo" min="5" max="40" step="5" value="20">
+            <output id="ll-plazo-out" for="ll-plazo">20 años</output>
+          </div>
+          <p class="ll-summary" id="ll-summary" aria-live="polite"></p>
+        </header>
+        <div class="lifeline">
+          <div class="ll-chart">
+            <svg id="ll-svg" viewBox="0 0 600 236" role="img" aria-label="Línea de vida: hasta qué edad protege cada seguro" aria-describedby="ll-summary"></svg>
+          </div>
+        </div>
+
+        <div class="compare">
+          <div class="table-scroll">
+            <table>
+              <caption class="sr">Comparación de los tres seguros</caption>
+              <thead>
+                <tr><th scope="col"><span class="sr">Concepto</span></th><th scope="col"><span class="dot dot-temporal"></span>Temporal</th><th scope="col"><span class="dot dot-vitalicio"></span>Vitalicio</th><th scope="col"><span class="dot dot-dotal"></span>Dotal Mixto</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Pago si falleces</th><td>Sí, durante el plazo</td><td>Sí, en cualquier momento</td><td>Sí, durante el plazo</td></tr>
+                <tr><th scope="row">Pago si sobrevives</th><td>No</td><td>No aplica: no vence</td><td>Sí, al vencimiento</td></tr>
+                <tr><th scope="row">¿Quién recibe el pago?</th><td>Tus beneficiarios</td><td>Tus beneficiarios</td><td>Tus beneficiarios o tú</td></tr>
+                <tr><th scope="row">Para qué sirve</th><td>Proteger ingresos y deudas</td><td>Dejar un patrimonio</td><td>Proteger y ahorrar</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COTIZADOR -->
+    <section class="section section-cotiza" id="cotiza">
+      <div class="wrap">
+        <header class="section-head">
+          <h2>Calcula tu prima de seguro de vida</h2>
+          <p>El resultado cambia mientras llenas tus datos. Usamos la tarifa técnica de VITAE: tabla de mortalidad CNSF M 2013 e interés técnico del 6%.</p>
+        </header>
+
+        <div class="quote-grid">
+          <form class="quote" id="quote-form" novalidate>
+            <fieldset>
+              <legend>Seguro</legend>
+              <div class="seg" role="radiogroup" aria-label="Seguro">
+                <input type="radio" name="producto" id="q-temporal" value="temporal" checked><label for="q-temporal">Temporal</label>
+                <input type="radio" name="producto" id="q-vitalicio" value="vitalicio"><label for="q-vitalicio">Vitalicio</label>
+                <input type="radio" name="producto" id="q-dotal" value="dotal"><label for="q-dotal">Dotal Mixto</label>
+              </div>
+            </fieldset>
+
+            <div class="row">
+              <div class="field">
+                <label for="q-edad">Edad</label>
+                <input id="q-edad" name="edad" type="number" inputmode="numeric" min="18" max="75" value="35" required aria-describedby="e-edad">
+                <p class="field-error" id="e-edad" hidden></p>
+              </div>
+              <fieldset class="field">
+                <legend>Sexo</legend>
+                <div class="seg seg-2">
+                  <input type="radio" name="sexo" id="q-f" value="F" checked><label for="q-f">Mujer</label>
+                  <input type="radio" name="sexo" id="q-m" value="M"><label for="q-m">Hombre</label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="row">
+              <fieldset class="field">
+                <legend>¿Fumas?</legend>
+                <div class="seg seg-2">
+                  <input type="radio" name="fumador" id="q-nofuma" value="no" checked><label for="q-nofuma">No</label>
+                  <input type="radio" name="fumador" id="q-fuma" value="si"><label for="q-fuma">Sí</label>
+                </div>
+              </fieldset>
+              <div class="field">
+                <label for="q-padec">Padecimiento diagnosticado</label>
+                <select id="q-padec" name="padecimiento">
+                  <option value="ninguno">Ninguno</option>
+                  <option value="E000001">Hipotiroidismo</option>
+                  <option value="E000002">Asma crónica</option>
+                  <option value="E000003">Dislipidemia</option>
+                  <option value="E000004">Diabetes tipo 2</option>
+                  <option value="E000005">Obesidad</option>
+                  <option value="E000006">Cardiopatía controlada</option>
+                  <option value="E000007">Enfermedad renal crónica</option>
+                  <option value="E000008">Hipertensión</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row row-money">
+              <div class="field">
+                <label for="q-suma">Suma asegurada</label>
+                <input id="q-suma" name="suma" inputmode="numeric" autocomplete="off" value="1,000,000" required aria-describedby="e-suma">
+                <p class="field-error" id="e-suma" hidden></p>
+              </div>
+              <div class="field">
+                <label for="q-moneda">Moneda</label>
+                <select id="q-moneda" name="moneda">
+                  <option value="MXN">MXN</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field" id="plazo-field">
+              <label for="q-plazo">Plazo de protección</label>
+              <select id="q-plazo" name="plazo">
+                <option value="5">5 años</option><option value="10">10 años</option><option value="15">15 años</option>
+                <option value="20" selected>20 años</option><option value="25">25 años</option><option value="30">30 años</option>
+                <option value="35">35 años</option><option value="40">40 años</option>
+              </select>
+            </div>
+
+            <div class="field" id="pagos-field" hidden>
+              <label for="q-pagos">Años de pago de primas</label>
+              <select id="q-pagos" name="pagos">
+                <option value="10">10 años</option><option value="15">15 años</option>
+                <option value="20" selected>20 años</option><option value="65">Hasta los 65 años</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="q-nombre">Tu nombre <span class="optional">(para tu cotización)</span></label>
+              <input id="q-nombre" name="nombre" autocomplete="name">
+            </div>
+          </form>
+
+          <div class="result" id="result" aria-live="polite">
+            <p class="result-label">Tu prima anual estimada</p>
+            <p class="result-price"><span id="r-anual">—</span> <small id="r-anual-cur">MXN</small></p>
+            <p class="result-mxn" id="r-anual-mxn" hidden></p>
+            <dl class="result-rows">
+              <div><dt>Pago único equivalente</dt><dd id="r-unica">—</dd></div>
+              <div><dt>Pagos anuales</dt><dd id="r-pagos">—</dd></div>
+              <div><dt>Protección</dt><dd id="r-cobertura">—</dd></div>
+              <div id="r-ahorro-row" hidden><dt>Recibes al terminar el plazo</dt><dd id="r-ahorro">—</dd></div>
+              <div id="r-extra-row" hidden><dt>Extraprima por padecimiento</dt><dd id="r-extra">—</dd></div>
+            </dl>
+
+            <div class="result-compare">
+              <p>Los tres seguros con tus mismos datos</p>
+              <ul id="r-compare"></ul>
+            </div>
+
+            <a class="btn btn-gold btn-block btn-wa" id="r-whatsapp" href="https://wa.me/525612516526" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.4 8.4 0 0 0-7.2 12.8L3.6 20.5l4.3-1.1A8.4 8.4 0 1 0 12 3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.6c.2-.4.5-.4.7-.4h.5c.2 0 .4 0 .5.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c.6 1.1 1.5 2 2.6 2.6l.6-.5c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.5-.4.7-.5.3-1.2.5-1.8.3-2.6-.7-4.6-2.7-5.4-5.3-.2-.6 0-1.3.3-1.7z" fill="currentColor"/></svg>
+              Enviar por WhatsApp
+            </a>
+            <button class="btn-text" type="button" id="r-copy">Copiar cotización</button>
+            <p class="result-note">Prima neta ilustrativa de un proyecto académico: no incluye gastos de adquisición y administración y no es una oferta de seguro. Tus datos solo salen de esta página si los envías por WhatsApp.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COBERTURAS -->
+    <section class="section" id="coberturas">
+      <div class="wrap cover-grid">
+        <header class="section-head">
+          <h2>Coberturas y servicios de tu póliza</h2>
+          <p>La cobertura básica de los tres seguros es por fallecimiento. Según el plan que contrates, tu póliza puede sumar servicios de apoyo para ti y tus beneficiarios.</p>
+        </header>
+        <ul class="services">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+            <div><h3>Cobertura por fallecimiento</h3><p>Tus beneficiarios reciben la suma asegurada pactada en tu póliza.</p></div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/></svg>
+            <div><h3>Apoyo funerario</h3><p>Acompañamiento a tu familia en el momento en que más lo necesita.</p></div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v10M7 12h10"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>
+            <div><h3>Orientación médica</h3><p>Orientación y referencias médicas cuando tengas dudas sobre tu salud.</p></div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 8h14M7 8l-3 7h6L7 8zM17 8l-3 7h6l-3-7z"/></svg>
+            <div><h3>Asistencia jurídica</h3><p>Apoyo a tus beneficiarios con los trámites para cobrar el seguro.</p></div>
+          </li>
+        </ul>
+
+        <div class="factors">
+          <h3>Lo que define el costo de tu seguro</h3>
+          <p>Tu prima se calcula de forma individual con estos datos:</p>
+          <ul class="chips">
+            <li>Edad</li><li>Suma asegurada</li><li>Plazo</li><li>Moneda</li><li>Sexo</li><li>Si fumas o no</li><li>Ocupación y actividades</li><li>Estado de salud</li>
+          </ul>
+          <p class="note">Tener una enfermedad previa no significa que te rechacemos. Cada caso se revisa según el diagnóstico, su control y la información médica disponible.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÓMO CONTRATAR -->
+    <section class="section section-tint" id="contratar">
+      <div class="wrap">
+        <header class="section-head">
+          <h2>De la cotización a tu póliza en cuatro pasos</h2>
+        </header>
+        <ol class="steps">
+          <li>
+            <span class="step-n" aria-hidden="true">1</span>
+            <h3>Calcula tu prima</h3>
+            <p>Elige seguro, suma asegurada, moneda y plazo, y envíanos tu cotización por WhatsApp.</p>
+          </li>
+          <li>
+            <span class="step-n" aria-hidden="true">2</span>
+            <h3>Llena tu solicitud</h3>
+            <p>Respondes un cuestionario sobre tu salud, hábitos y actividades. Declarar todo con claridad protege tu pago.</p>
+          </li>
+          <li>
+            <span class="step-n" aria-hidden="true">3</span>
+            <h3>Evaluamos tu caso</h3>
+            <p>Revisamos tu información para definir las condiciones de tu póliza y su prima final.</p>
+          </li>
+          <li>
+            <span class="step-n" aria-hidden="true">4</span>
+            <h3>Recibes tu póliza</h3>
+            <p>Con tu carátula y condiciones generales: asegurado, beneficiarios, suma, prima y fechas.</p>
+          </li>
+        </ol>
+
+        <div class="channels">
+          <h3>Canales para contratar</h3>
+          <ul>
+            <li><strong>Agentes</strong><span>Asesoría personal de principio a fin.</span></li>
+            <li><strong>Brokers</strong><span>Si ya trabajas con un corredor de seguros.</span></li>
+            <li><strong>Bancaseguros</strong><span>A través de tu banco.</span></li>
+            <li><strong>Alianzas</strong><span>Con empresas y organizaciones aliadas.</span></li>
+            <li><strong>Digital</strong><span>Empieza con tu cotización en línea.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOSOTROS -->
+    <section class="section section-navy" id="nosotros">
+      <div class="wrap about">
+        <div class="about-main">
+          <h2>Una aseguradora <em>confiable y cercana</em> que acompaña a las familias a lo largo del tiempo</h2>
+          <div class="about-cols">
+            <div>
+              <h3>Misión</h3>
+              <p>Hacer realidad «Tu vida. Nuestro compromiso.» con seguros que protejan el bienestar financiero de las familias y les permitan planear con mayor certidumbre. Te acompañamos desde que eliges tu seguro hasta que se paga el beneficio.</p>
+            </div>
+            <div>
+              <h3>Visión</h3>
+              <p>Ser reconocidos por ofrecer soluciones de protección y ahorro que acompañen a las familias a lo largo del tiempo, creciendo sobre un conocimiento cada vez más preciso de nuestros asegurados.</p>
+            </div>
+          </div>
+        </div>
+        <ul class="values" aria-label="Nuestros valores">
+          <li><strong>Compromiso</strong><span>Atendemos a asegurados y beneficiarios conforme a lo pactado.</span></li>
+          <li><strong>Cercanía</strong><span>Escuchamos, explicamos alternativas y facilitamos los trámites.</span></li>
+          <li><strong>Transparencia</strong><span>Coberturas, exclusiones, costos y plazos dichos con claridad.</span></li>
+          <li><strong>Solvencia</strong><span>Administramos con responsabilidad los recursos para cumplir.</span></li>
+          <li><strong>Rigor técnico</strong><span>Tarifas sustentadas en información y supuestos documentados.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PREGUNTAS -->
+    <section class="section" id="preguntas">
+      <div class="wrap faq-grid">
+        <header class="section-head">
+          <h2>Preguntas frecuentes sobre tu seguro</h2>
+          <p>¿No encuentras tu respuesta? Escríbenos al <strong class="nowrap">56 12 51 65 26</strong> o a <strong>vitae.support@gmail.com</strong>.</p>
+          <div><a class="btn btn-gold" href="#cotiza">Calcular mi prima</a></div>
+        </header>
+        <div class="faq">
+          <details>
+            <summary>¿Qué pasa si termina el plazo de mi seguro Temporal y sigo con vida?</summary>
+            <p>La protección concluye y no hay devolución de primas en la cobertura básica. Si quieres seguir protegido, puedes contratar una nueva póliza; la renovación no es automática y requiere una nueva evaluación.</p>
+          </details>
+          <details>
+            <summary>¿El seguro Vitalicio se termina a cierta edad?</summary>
+            <p>No. Te protege durante toda tu vida mientras la póliza se mantenga vigente conforme a sus condiciones. Tus primas se pagan solo durante el periodo que pactes.</p>
+          </details>
+          <details>
+            <summary>En el Dotal Mixto, ¿quién recibe el dinero?</summary>
+            <p>Si falleces durante el plazo, tus beneficiarios reciben la suma asegurada. Si llegas con vida al final del plazo, la recibes tú.</p>
+          </details>
+          <details>
+            <summary>¿Por qué el precio del cotizador es una estimación?</summary>
+            <p>El cotizador calcula la prima neta con tu edad, sexo, si fumas, tu padecimiento declarado, la suma asegurada y el plazo. La prima final suma los gastos de la póliza y se confirma cuando evaluamos tu solicitud.</p>
+          </details>
+          <details>
+            <summary>¿Puedo contratar en dólares o en euros?</summary>
+            <p>Sí. Puedes contratar en pesos mexicanos, dólares estadounidenses o euros. Tu póliza se administra en la moneda que elijas.</p>
+          </details>
+          <details>
+            <summary>¿Por qué me preguntan por mi salud al contratar?</summary>
+            <p>Tus respuestas son la base de tu contrato. La ley obliga a declarar los hechos importantes que conozcas para evaluar el riesgo. Omitir o declarar con inexactitud un padecimiento puede afectar el contrato, así que te recomendamos informar todo lo que sepas. Una enfermedad previa no implica un rechazo automático.</p>
+          </details>
+          <details>
+            <summary>¿Cuánto tarda el pago de un siniestro?</summary>
+            <p>De acuerdo con el artículo 71 de la Ley sobre el Contrato de Seguro, el pago vence 30 días después de que la aseguradora recibe los documentos e información que permiten conocer el fundamento de la reclamación.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="aviso">
+    <div class="wrap footer-grid">
+      <div class="footer-logo">
+        <img src="img/vitae-v.png" alt="" width="200" height="175">
+        <img class="footer-word" src="img/vitae-wordmark.png" alt="VITAE" width="481" height="102">
+        <p class="footer-tag">Tu vida. Nuestro compromiso.</p>
+      </div>
+      <nav aria-label="Seguros">
+        <h2 class="footer-h">Seguros</h2>
+        <a href="#temporal">Vida Temporal</a>
+        <a href="#vitalicio">Vida Vitalicio</a>
+        <a href="#dotal">Vida Dotal Mixto</a>
+        <a href="#cotiza">Calcular mi prima</a>
+      </nav>
+      <nav aria-label="VITAE">
+        <h2 class="footer-h">VITAE</h2>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contratar">Cómo contratar</a>
+        <a href="#preguntas">Preguntas frecuentes</a>
+      </nav>
+      <div>
+        <h2 class="footer-h">Atención a clientes</h2>
+        <p class="footer-contact">56 12 51 65 26</p>
+        <p class="footer-contact">vitae.support@gmail.com</p>
+      </div>
+    </div>
+    <div class="wrap legal">
+      <p>VITAE Seguros de Vida es un proyecto académico. No es una institución de seguros autorizada por la CNSF y sus productos no están registrados, por lo que no pueden contratarse. Las primas del cotizador se calculan con la nota técnica del proyecto y son solo ilustrativas.</p>
+      <p>© <span id="year">2026</span> VITAE Seguros de Vida.</p>
+    </div>
+  </footer>
+
+  <script src="js/cotizador.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

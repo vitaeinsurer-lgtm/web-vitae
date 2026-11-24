@@ -1,0 +1,9 @@
+# Herramientas locales de diseño y de Claude: no se publican en el sitio
+.claude/
+.agents/
+.taste-skill/
+.impeccable/
+.mcp.json
+skills-lock.json
+PRODUCT.md
+shots/
