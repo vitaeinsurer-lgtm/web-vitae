@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WHATSAPP = '525612516526'; // 56 12 51 65 26 con clave de país (52)
+  var WHATSAPP = '525586961581'; // 55 8696 1581 con clave de país (52): recibe las cotizaciones
   var C = window.VitaeCotizador;
 
   /* ---------- Movimiento ---------- */
