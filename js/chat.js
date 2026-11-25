@@ -58,12 +58,40 @@
   document.body.appendChild(fab);
   document.body.appendChild(panel);
 
-  // Mientras el cotizador pasa por la parte baja de la pantalla, el botón se reduce a solo el ícono
-  var cotiza = document.getElementById('cotiza');
-  if (cotiza && 'IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { fab.classList.toggle('is-tucked', es[0].isIntersecting); },
-      { rootMargin: '-75% 0px 0px 0px' }).observe(cotiza);
+  // El botón muestra "Pregúntale a VITAE" siempre que no tape nada; si su tamaño completo
+  // cubriría un botón, enlace o campo, se reduce a solo el ícono hasta que el espacio se libere.
+  var INTERACTIVOS = 'a[href], button, input:not([type=hidden]), select, textarea, summary, .seg label, .check';
+  var anchoCompleto = 0, pendiente = false;
+  function medirAncho() {
+    // Mide el ancho completo sin animación (el texto también tiene su propia transición)
+    var label = fab.querySelector('.chat-fab-label');
+    var tuck = fab.classList.contains('is-tucked');
+    fab.style.transition = label.style.transition = 'none';
+    if (tuck) fab.classList.remove('is-tucked');
+    anchoCompleto = fab.getBoundingClientRect().width;
+    if (tuck) fab.classList.add('is-tucked');
+    fab.getBoundingClientRect();
+    fab.style.transition = label.style.transition = '';
   }
+  function tapa() {
+    pendiente = false;
+    if (panel.classList.contains('is-open')) return;
+    var f = fab.getBoundingClientRect();
+    var der = f.right, abajo = f.bottom, izq = der - anchoCompleto, arriba = abajo - Math.max(f.height, 52);
+    var choca = [].some.call(document.querySelectorAll(INTERACTIVOS), function (el) {
+      if (el === fab || fab.contains(el) || panel.contains(el)) return false;
+      var r = el.getBoundingClientRect();
+      if (!r.width || !r.height || r.bottom < arriba - 6 || r.top > abajo + 6) return false;
+      return r.right > izq - 6 && r.left < der + 6 && getComputedStyle(el).visibility !== 'hidden';
+    });
+    fab.classList.toggle('is-tucked', choca);
+  }
+  function revisar() { if (!pendiente) { pendiente = true; requestAnimationFrame(tapa); } }
+  medirAncho();
+  window.addEventListener('scroll', revisar, { passive: true });
+  window.addEventListener('resize', function () { medirAncho(); revisar(); });
+  document.addEventListener('transitionend', function (e) { if (e.target.id === 'peek') revisar(); });
+  revisar();
 
   var log = panel.querySelector('#chat-log');
   var form = panel.querySelector('#chat-form');
@@ -125,6 +153,7 @@
     panel.classList.remove('is-open');
     fab.setAttribute('aria-expanded', 'false');
     document.documentElement.classList.remove('chat-is-open');
+    revisar();
     setTimeout(function () { if (!panel.classList.contains('is-open')) panel.hidden = true; }, reduceMotion ? 0 : 160);
     fab.focus();
   }

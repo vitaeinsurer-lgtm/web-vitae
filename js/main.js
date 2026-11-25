@@ -409,6 +409,8 @@
         if (p !== 'vitalicio' && validos.indexOf(d.plazo) === -1) o.plazo = validos[validos.length - 1];
         // Mismos años de pago, sin pasar del máximo de cada seguro
         if (d.pagos === 'vida') o.pagos = p === 'vitalicio' ? 'vida' : o.plazo;
+        // Si no se tocaron los años de pago, VITAE Siempre se compara con su forma por omisión: de por vida, como el Excel
+        else if (p === 'vitalicio' && d.producto !== 'vitalicio' && !pagosTocados) o.pagos = 'vida';
         else o.pagos = Math.min(d.pagos, C.maxPagos(p, d.edad, o.plazo));
         var rr = C.cotizar(o);
         var base = p === 'vitalicio' ? pagosDe(rr)
