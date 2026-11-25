@@ -1,13 +1,15 @@
 // Intermediario del asistente con IA de VITAE (Cloudflare Worker).
 // - Guarda la clave de Anthropic como secreto: nunca llega al navegador.
 // - Solo acepta peticiones del sitio de VITAE, con tamaño y frecuencia limitados.
-// - Usa Claude Haiku 5.5 con una herramienta "cotizar" que corre el mismo motor del
+// - Usa Claude Opus 5.5 con una herramienta "cotizar" que corre el mismo motor del
 //   cotizador del sitio (validado contra el Excel interno), para no inventar primas.
 import Anthropic from '@anthropic-ai/sdk';
 import C from '../../js/cotizador.js';
 import { SYSTEM_PROMPT } from './prompt.js';
 
-const MODEL = 'claude-haiku-5-5';
+const MODEL = 'claude-opus-5-5';
+// Si el modelo rechaza una pregunta por sus filtros de seguridad, la API la reintenta sola con el modelo de respaldo adecuado
+const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
 const MAX_MESSAGES = 20;      // historial que se envía al modelo
 const MAX_CHARS = 1200;       // por mensaje del visitante
 const MAX_TOOL_ROUNDS = 3;    // vueltas de herramienta por respuesta
@@ -131,14 +133,16 @@ export function validarMensajes(raw) {
 
 const SIN_RESPUESTA = 'Esa pregunta no la puedo responder. Puedo ayudarte con los seguros de VITAE y a cotizar una prima.';
 
-/* ---------- Conversación con Claude Haiku 5.5 ---------- */
+/* ---------- Conversación con Claude Opus 5.5 ---------- */
 export async function responder(client, mensajes) {
   const messages = mensajes.map((m) => ({ role: m.role, content: m.content }));
   for (let ronda = 0; ronda <= MAX_TOOL_ROUNDS; ronda++) {
-    const response = await client.messages.create({
+    const response = await client.beta.messages.create({
       model: MODEL,
+      betas: [FALLBACK_BETA],
+      fallbacks: 'default',
       max_tokens: 2048, // deja margen al razonamiento además de la respuesta corta
-      output_config: { effort: 'low' },
+      output_config: { effort: 'low' }, // en Opus 5.5 el razonamiento no se apaga; el esfuerzo bajo lo mantiene breve
       system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
       tools: [COTIZAR_TOOL],
       messages

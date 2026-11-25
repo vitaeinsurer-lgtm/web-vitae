@@ -17,7 +17,7 @@ export function startMock(port = 0) {
         usage: { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 }
       }));
     };
-    if (req.url !== '/v1/messages') { res.writeHead(404); return res.end('{}'); }
+    if (!req.url.startsWith('/v1/messages')) { res.writeHead(404); return res.end('{}'); }
     const last = body.messages[body.messages.length - 1];
     const toolResult = Array.isArray(last.content) && last.content.find((b) => b.type === 'tool_result');
     const text = typeof last.content === 'string' ? last.content : '';

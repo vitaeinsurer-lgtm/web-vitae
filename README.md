@@ -14,7 +14,7 @@ Se publica con GitHub Pages desde la rama `main`, carpeta raíz.
 
 ## Asistente con IA (`chatbot/`)
 
-Chat en la página que responde dudas y cotiza con **Claude Haiku 5.5**. La página nunca ve la clave de la API: habla con un intermediario en Cloudflare Workers (`chatbot/src/worker.js`) que guarda la clave como secreto, solo acepta peticiones del sitio, limita el tamaño y la frecuencia de los mensajes y le da a Haiku la herramienta `cotizar`, que usa `js/cotizador.js` para no inventar primas.
+Chat en la página que responde dudas y cotiza con **Claude Opus 5.5**. La página nunca ve la clave de la API: habla con un intermediario en Cloudflare Workers (`chatbot/src/worker.js`) que guarda la clave como secreto, solo acepta peticiones del sitio, limita el tamaño y la frecuencia de los mensajes y le da al modelo la herramienta `cotizar`, que usa `js/cotizador.js` para no inventar primas.
 
 - Instrucciones del asistente: `chatbot/src/prompt.js`.
 - Pruebas contra una API simulada (sin gastar saldo): `cd chatbot && npm install && npm test`.

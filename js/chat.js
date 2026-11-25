@@ -1,10 +1,10 @@
-/* VITAE — asistente con IA (Claude Haiku 5.5 a través del intermediario en Cloudflare).
+/* VITAE — asistente con IA (Claude Opus 5.5 a través del intermediario en Cloudflare).
    Mientras CHAT_ENDPOINT esté vacío, el asistente no aparece en la página. */
 (function () {
   'use strict';
 
   // Dirección del Worker desplegado, por ejemplo: 'https://vitae-chatbot.TU-CUENTA.workers.dev/chat'
-  var CHAT_ENDPOINT = '';
+  var CHAT_ENDPOINT = 'https://vitae-chatbot.vitae-chatbot.workers.dev/chat';
   var endpoint = window.VITAE_CHAT_ENDPOINT || CHAT_ENDPOINT;
   if (!endpoint) return;
 
@@ -132,7 +132,11 @@
     sendBtn.disabled = b;
     input.setAttribute('aria-busy', String(b));
   }
-  function autoGrow() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
+  function autoGrow() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    input.style.overflowY = input.scrollHeight > 120 ? 'auto' : 'hidden'; // barra solo si el texto no cabe
+  }
   input.addEventListener('input', autoGrow);
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : send(input.value); }

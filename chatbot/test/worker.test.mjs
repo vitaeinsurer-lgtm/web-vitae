@@ -47,7 +47,8 @@ try {
   check('chat: responde texto (ignora bloques de razonamiento)', hola.status === 200 && holaBody.reply === 'Hola, soy el asistente de VITAE.', JSON.stringify(holaBody));
   check('chat: la respuesta trae CORS', hola.headers.get('Access-Control-Allow-Origin') === ORIGIN);
   const req0 = mock.requests[n0].body;
-  check('API: usa claude-haiku-5-5', req0.model === 'claude-haiku-5-5', req0.model);
+  check('API: usa claude-opus-5-5', req0.model === 'claude-opus-5-5', req0.model);
+  check('API: respaldo automático ante rechazos (fallbacks default + beta)', req0.fallbacks === 'default' && String(mock.requests[n0].headers['anthropic-beta'] || '').includes('server-side-fallback-2026-07-01'), String(mock.requests[n0].headers['anthropic-beta']));
   check('API: esfuerzo low y max_tokens con margen', req0.output_config && req0.output_config.effort === 'low' && req0.max_tokens >= 1024);
   check('API: prompt del sistema en caché', Array.isArray(req0.system) && req0.system[0].cache_control && req0.system[0].cache_control.type === 'ephemeral');
   check('API: herramienta cotizar estricta', req0.tools && req0.tools[0].name === 'cotizar' && req0.tools[0].strict === true && req0.tools[0].input_schema.additionalProperties === false);
