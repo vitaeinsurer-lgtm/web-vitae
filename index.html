@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=202611251023">
+  <link rel="stylesheet" href="css/styles.css?v=202611251041">
 </head>
 <body>
   <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -264,7 +264,7 @@
 
             <div class="row row-plazo">
             <div class="field" id="plazo-field">
-              <label for="q-plazo">Plazo de protección</label>
+              <label for="q-plazo">Plazo de protección <span class="optional">(de 5 en 5)</span></label>
               <select id="q-plazo" name="plazo">
                 <option value="5">5 años</option><option value="10">10 años</option><option value="15">15 años</option>
                 <option value="20" selected>20 años</option><option value="25">25 años</option><option value="30">30 años</option>
@@ -274,8 +274,12 @@
             </div>
 
             <div class="field" id="pagos-field">
-              <label for="q-pagos">Años de pago de primas</label>
-              <input id="q-pagos" name="pagos" type="number" inputmode="numeric" min="1" max="20" step="1" value="20" required aria-describedby="n-pagos e-pagos">
+              <label for="q-pagos">Años de pago de primas <span class="optional">(cualquier número)</span></label>
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" aria-label="Un año de pago menos">−</button>
+                <input id="q-pagos" name="pagos" type="number" inputmode="numeric" min="1" max="20" step="1" value="20" required aria-describedby="n-pagos e-pagos">
+                <button type="button" class="step-btn" data-step="1" aria-label="Un año de pago más">+</button>
+              </div>
               <p class="field-note" id="n-pagos"></p>
               <p class="field-error" id="e-pagos" hidden></p>
             </div>
@@ -309,7 +313,7 @@
               Enviar por WhatsApp
             </a>
             <button class="btn-text" type="button" id="r-copy">Copiar cotización</button>
-            <p class="result-note">Prima neta ilustrativa de un proyecto académico: no incluye gastos de adquisición y administración y no es una oferta de seguro. Tus datos solo salen de esta página si los envías por WhatsApp.</p>
+            <p class="result-note">Prima neta estimada: no incluye gastos de adquisición y administración. La prima final se define al evaluar tu solicitud. Tus datos solo salen de esta página si los envías por WhatsApp.</p>
           </div>
         </div>
       </div>
@@ -472,15 +476,28 @@
           </details>
           <details>
             <summary>¿Por qué el precio del cotizador es una estimación?</summary>
-            <p>El cotizador calcula la prima neta con tu edad, sexo, si fumas, tu padecimiento declarado, la suma asegurada y el plazo. La prima final suma los gastos de la póliza y se confirma cuando evaluamos tu solicitud.</p>
+            <p>El cotizador calcula la prima neta con la nota técnica de VITAE: tu edad, sexo, si fumas, si haces deporte, tu padecimiento declarado, la suma asegurada, la moneda, el plazo y los años de pago. La prima final suma los gastos de adquisición y administración de la póliza y se confirma al evaluar tu solicitud.</p>
+          </details>
+          <details>
+            <summary>¿Puedo pagar mi seguro en menos años?</summary>
+            <p>Sí. Eliges en cuántos años pagar tus primas, desde 1 año hasta el plazo de protección; en VITAE Siempre, los pagos terminan a más tardar a los 85 años. Al pagar en menos años, cada pago anual es mayor, pero terminas de pagar antes y tu protección sigue hasta el final del plazo.</p>
+          </details>
+          <details>
+            <summary>¿Por qué me preguntan si hago deporte?</summary>
+            <p>Hacer deporte con regularidad se considera en la tarifa: para el cálculo, tu edad se reduce un año y tu prima baja un poco. Si practicas actividades de alto riesgo, se revisan aparte al evaluar tu solicitud.</p>
           </details>
           <details>
             <summary>¿Puedo contratar en dólares o en euros?</summary>
-            <p>Sí. Puedes contratar en pesos mexicanos, dólares estadounidenses o euros. Tu póliza se administra en la moneda que elijas.</p>
+            <p>Sí. Los seguros de VITAE se manejan en pesos mexicanos, dólares estadounidenses o euros, y cada póliza se valúa en la moneda establecida en su contrato. En el cotizador puedes ver tu prima en cualquiera de las tres; si eliges dólares o euros, también verás su equivalente en pesos.</p>
           </details>
           <details>
             <summary>¿Por qué me preguntan por mi salud al contratar?</summary>
             <p>Tus respuestas son la base de tu contrato. La ley obliga a declarar los hechos importantes que conozcas para evaluar el riesgo. Omitir o declarar con inexactitud un padecimiento puede afectar el contrato, así que te recomendamos informar todo lo que sepas. Una enfermedad previa no implica un rechazo automático.</p>
+          </details>
+          <details>
+            <summary>¿Y si no aparece mi preexistencia en el cotizador?</summary>
+            <p>El cotizador en línea incluye los padecimientos con extraprima definida en nuestra nota técnica: hipotiroidismo, asma crónica, dislipidemia, diabetes tipo 2, obesidad, cardiopatía controlada, enfermedad renal crónica e hipertensión. Si el tuyo no aparece, no significa que no puedas asegurarte.</p>
+            <p>Escríbenos por WhatsApp al <strong class="nowrap">56 12 51 65 26</strong> o a <strong>vitae.support@gmail.com</strong> con tu padecimiento, desde cuándo lo tienes y cómo lo controlas, y nuestro equipo revisará tu caso de forma personal. Cada caso se valora según el diagnóstico, su control y la información médica disponible. Mientras tanto, puedes cotizar con "Ninguno" para tener una prima de referencia.</p>
           </details>
           <details>
             <summary>¿Cuánto tarda el pago de un siniestro?</summary>
@@ -523,8 +540,8 @@
     </div>
   </footer>
 
-  <script src="js/cotizador.js?v=202611251023"></script>
-  <script src="js/main.js?v=202611251023"></script>
-  <script src="js/chat.js?v=202611251023"></script>
+  <script src="js/cotizador.js?v=202611251041"></script>
+  <script src="js/main.js?v=202611251041"></script>
+  <script src="js/chat.js?v=202611251041"></script>
 </body>
 </html>

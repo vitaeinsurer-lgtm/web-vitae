@@ -444,6 +444,23 @@
     }
   });
 
+  // Botones − / + de los años de pago: un año a la vez, dentro del rango permitido
+  document.querySelectorAll('.step-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var max = Number(pagosField.max) || 1;
+      var v = Math.min(Math.max((Number(pagosField.value) || 0) + Number(b.getAttribute('data-step')), 1), max);
+      pagosField.value = String(v);
+      pagosField.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+  function syncSteppers() {
+    var v = Number(pagosField.value) || 0, max = Number(pagosField.max) || 1;
+    document.querySelector('.step-btn[data-step="-1"]').disabled = v <= 1;
+    document.querySelector('.step-btn[data-step="1"]').disabled = v >= max;
+  }
+  form.addEventListener('input', syncSteppers);
+  form.addEventListener('change', syncSteppers);
+
   // Los enlaces "Cotizar ..." preseleccionan el seguro
   document.querySelectorAll('[data-producto]').forEach(function (a) {
     a.addEventListener('click', function () {
@@ -453,6 +470,7 @@
   });
 
   render(false);
+  syncSteppers();
 
   /* Celular: muestra la prima abajo mientras el formulario está a la vista y el resultado no */
   var peek = $('peek');

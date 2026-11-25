@@ -20,7 +20,7 @@ const NOMBRE = { temporal: 'VITAE Protege', vitalicio: 'VITAE Siempre', dotal: '
 const COTIZAR_TOOL = {
   name: 'cotizar',
   description:
-    'Calcula la prima neta ilustrativa de un seguro de VITAE con la tarifa técnica del proyecto ' +
+    'Calcula la prima neta estimada de un seguro de VITAE con la tarifa técnica del proyecto ' +
     '(tabla CNSF M 2013, interés técnico 6%). Úsala para cualquier cifra de prima. ' +
     'Devuelve prima anual, pago único equivalente y número de pagos, o un error si los datos están fuera de los límites.',
   strict: true,
@@ -96,7 +96,7 @@ export function ejecutarCotizar(i) {
     extraprima_porcentaje: Math.round(r.extraprima * 100),
     ajuste_deportista: i.deportista ? 'Se redujo 1 año la edad de cálculo por condición deportiva.' : null,
     prima_anual_mxn: i.moneda === 'MXN' ? null : redondeo(r.primaAnualMXN),
-    nota: 'Prima neta ilustrativa de un proyecto académico; no incluye gastos de adquisición y administración.'
+    nota: 'Prima neta estimada; no incluye gastos de adquisición y administración. La prima final se define al evaluar la solicitud.'
   };
 }
 
