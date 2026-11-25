@@ -478,6 +478,7 @@ legend { font: 600 .92rem/1.3 var(--f-display); padding: 0; margin-bottom: 8px; 
 #ll-svg.ll-intro .b-vitalicio { transition-delay: 70ms; }
 #ll-svg.ll-intro .b-dotal { transition-delay: 130ms; }
 #ll-svg.ll-intro .coin { transition: cx 760ms var(--ease-out) 130ms; }
+#ll-svg.ll-reset .bar, #ll-svg.ll-reset .coin { transition: none !important; }
 /* Preguntas frecuentes: la respuesta se despliega (navegadores que lo soportan) */
 :root { interpolate-size: allow-keywords; }
 .faq details::details-content {

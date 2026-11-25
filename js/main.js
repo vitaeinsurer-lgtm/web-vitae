@@ -11,31 +11,46 @@
   var EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
   if (!reduceMotion && canObserve) {
     document.documentElement.classList.add('js-motion');
-    // Cada grupo (tarjetas, pasos) entra escalonado una sola vez: 0, 60 y 110 ms…
+    // Cada grupo (tarjetas, pasos, coberturas) entra escalonado: 0, 60, 110 ms…
     var STAGGER = [0, 60, 110, 150, 185];
     document.querySelectorAll('.products, .steps, .extras-list').forEach(function (group) {
       group.querySelectorAll('.reveal').forEach(function (el, i) { el.style.setProperty('--d', (STAGGER[i] || 150) + 'ms'); });
     });
+    // Entra cuando ya se ve al menos un 15%; se rearma solo cuando salió por completo de la pantalla,
+    // así se repite al volver (bajando o subiendo) sin desaparecer nunca mientras está a la vista.
     var revealObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); revealObs.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -10% 0px' });
+      entries.forEach(function (e) {
+        if (e.isIntersecting && e.intersectionRatio >= 0.15) e.target.classList.add('is-in');
+        else if (!e.isIntersecting) e.target.classList.remove('is-in');
+      });
+    }, { threshold: [0, 0.15] });
     document.querySelectorAll('.reveal, .section-head').forEach(function (el) { revealObs.observe(el); });
 
-    // Cifras del inicio: suben desde cero una sola vez, al cargar (900 ms, desaceleración)
+    // Cifras del inicio: suben desde cero (900 ms, desaceleración) cada vez que vuelven a la vista
     document.querySelectorAll('[data-count]').forEach(function (el) {
       var final = Number(el.getAttribute('data-count')), dec = Number(el.getAttribute('data-decimals') || 0);
       var pre = el.getAttribute('data-prefix') || '', suf = el.getAttribute('data-suffix') || '';
       var fmt = new Intl.NumberFormat('es-MX', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-      var t0 = null, DUR = 900;
+      var DUR = 900, raf = 0, armado = true;
       el.style.fontVariantNumeric = 'tabular-nums';
-      el.textContent = pre + fmt.format(0) + suf;
-      function step(t) {
-        if (t0 === null) t0 = t;
-        var p = Math.min((t - t0) / DUR, 1), e = 1 - Math.pow(1 - p, 4);
-        el.textContent = pre + fmt.format(final * e) + suf;
-        if (p < 1) requestAnimationFrame(step);
+      var show = function (v) { el.textContent = pre + fmt.format(v) + suf; };
+      show(0);
+      function run() {
+        var t0 = null;
+        cancelAnimationFrame(raf);
+        function step(t) {
+          if (t0 === null) t0 = t;
+          var p = Math.min((t - t0) / DUR, 1), e = 1 - Math.pow(1 - p, 4);
+          show(final * e);
+          if (p < 1) raf = requestAnimationFrame(step);
+        }
+        raf = requestAnimationFrame(step);
       }
-      setTimeout(function () { requestAnimationFrame(step); }, 250);
+      new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        if (e.isIntersecting && e.intersectionRatio >= 0.5 && armado) { armado = false; setTimeout(run, 150); }
+        else if (!e.isIntersecting) { armado = true; cancelAnimationFrame(raf); show(0); }
+      }, { threshold: [0, 0.5] }).observe(el);
     });
   }
 
@@ -166,18 +181,32 @@
     plazoIn.addEventListener('input', updateLifeline);
     if (!reduceMotion && canObserve) {
       // El texto se llena desde el inicio (si no, al aparecer movería la página);
-      // solo las barras empiezan recogidas en la edad actual y se extienden al entrar en pantalla
+      // las barras se recogen fuera de pantalla y se dibujan cada vez que la gráfica vuelve a la vista
       updateLifeline();
-      ['temporal', 'vitalicio', 'dotal'].forEach(function (k) { parts[k].setAttribute('width', BAR_H); });
-      parts.coin.setAttribute('cx', sx(+edadIn.value));
-      var llObs = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        llObs.disconnect();
-        svg.classList.add('ll-intro');
-        requestAnimationFrame(function () { requestAnimationFrame(updateLifeline); });
-        setTimeout(function () { svg.classList.remove('ll-intro'); }, 1000);
-      }, { threshold: 0.4 });
-      llObs.observe(svg);
+      var recoger = function () {
+        svg.classList.remove('ll-intro');
+        svg.classList.add('ll-reset'); // sin transición: el cambio ocurre fuera de la vista
+        ['temporal', 'vitalicio', 'dotal'].forEach(function (k) { parts[k].setAttribute('width', BAR_H); });
+        parts.coin.setAttribute('cx', sx(+edadIn.value));
+        svg.getBoundingClientRect();
+        svg.classList.remove('ll-reset');
+      };
+      var llArmado = true, llTimer = 0;
+      recoger();
+      new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        if (e.isIntersecting && e.intersectionRatio >= 0.4 && llArmado) {
+          llArmado = false;
+          svg.classList.add('ll-intro');
+          requestAnimationFrame(function () { requestAnimationFrame(updateLifeline); });
+          clearTimeout(llTimer);
+          llTimer = setTimeout(function () { svg.classList.remove('ll-intro'); }, 1000);
+        } else if (!e.isIntersecting) {
+          llArmado = true;
+          clearTimeout(llTimer);
+          recoger();
+        }
+      }, { threshold: [0, 0.4] }).observe(svg);
     } else {
       updateLifeline();
     }
