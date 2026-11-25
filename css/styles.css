@@ -485,6 +485,32 @@ legend { font: 600 .92rem/1.3 var(--f-display); padding: 0; margin-bottom: 8px; 
 }
 .faq details[open]::details-content { block-size: auto; }
 
+/* Nombre de producto: VITAE en versalitas sobre el nombre */
+.product h3 { display: grid; gap: 2px; font-size: 1.55rem; }
+.brand-pre { font: 600 .74rem/1 var(--f-display); letter-spacing: .32em; color: var(--muted); }
+
+/* ---------- Coberturas adicionales ---------- */
+.extras { grid-column: 1 / -1; display: grid; gap: 18px; margin-top: clamp(24px, 4vw, 40px); }
+.extras-head { display: grid; gap: 6px; max-width: 68ch; }
+.extras-head p { color: var(--muted); }
+.extras-list { border-top: 2px solid var(--gold); }
+.extras-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.2fr); gap: 8px 28px; padding: 16px 4px; border-bottom: 1px solid var(--line); align-items: baseline; transition: background-color 200ms ease; }
+.extras-row strong { font: 600 1.02rem/1.35 var(--f-display); color: var(--ink); }
+.extras-row span { color: var(--muted); font-size: .97rem; }
+.extras-row span:last-child { color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .extras-row:not(.extras-labels):hover { background: color-mix(in srgb, var(--tint) 70%, transparent); } }
+.extras-labels { padding-block: 10px; }
+.extras-labels span { font: 600 .72rem/1.3 var(--f-display) !important; letter-spacing: .14em; text-transform: uppercase; color: var(--muted) !important; }
+@media (max-width: 760px) {
+  .extras-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .extras-labels { display: none; }
+  .extras-row span:last-child::before { content: "Paga: "; font-weight: 700; }
+}
+
+/* Línea dorada bajo los títulos: se dibuja al llegar a la sección (solo con movimiento) */
+.js-motion .section-head h2::after { transform: scaleX(0); transform-origin: left; transition: transform 700ms var(--ease-out) 120ms; }
+.js-motion .section-head.is-in h2::after { transform: scaleX(1); }
+
 /* ---------- Barra de prima en celular ---------- */
 .peek { display: none; }
 @media (max-width: 1020px) {

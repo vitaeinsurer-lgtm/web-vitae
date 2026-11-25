@@ -10,8 +10,8 @@
 
   var SUGERENCIAS = [
     '¿Qué seguro me conviene si tengo hijos pequeños?',
-    'Cotiza un Temporal: mujer de 40 años, no fuma, $1,500,000 a 20 años',
-    '¿En qué se diferencia el Dotal Mixto del Vitalicio?',
+    'Cotiza VITAE Protege: mujer de 40 años, no fuma, $1,500,000 a 20 años',
+    '¿En qué se diferencia VITAE Tranquilidad de VITAE Siempre?',
     '¿Puedo asegurarme si tengo diabetes?'
   ];
   var BIENVENIDA = 'Hola, soy el asistente de VITAE. Te ayudo a entender nuestros seguros de vida y a calcular una prima. ¿Qué quieres saber?';

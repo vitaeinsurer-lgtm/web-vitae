@@ -15,7 +15,7 @@ const MAX_CHARS = 1200;       // por mensaje del visitante
 const MAX_TOOL_ROUNDS = 3;    // vueltas de herramienta por respuesta
 const RATE = { windowMs: 60_000, max: 12 }; // por IP y por instancia (límite de mejor esfuerzo)
 
-const NOMBRE = { temporal: 'Vida Temporal', vitalicio: 'Vida Vitalicio', dotal: 'Vida Dotal Mixto' };
+const NOMBRE = { temporal: 'VITAE Protege', vitalicio: 'VITAE Siempre', dotal: 'VITAE Tranquilidad' };
 
 const COTIZAR_TOOL = {
   name: 'cotizar',
@@ -35,7 +35,7 @@ const COTIZAR_TOOL = {
       moneda: { type: 'string', enum: ['MXN', 'USD', 'EUR'] },
       plazo: {
         type: 'integer',
-        description: 'Temporal y Dotal Mixto: años de protección (5 a 40, múltiplos de 5). Vitalicio: años de pago de primas (10, 15 o 20).'
+        description: 'VITAE Protege y VITAE Tranquilidad: años de protección (5 a 40, múltiplos de 5). VITAE Siempre: años de pago de primas (10, 15 o 20).'
       },
       padecimiento: {
         type: 'string',
@@ -66,7 +66,7 @@ export function ejecutarCotizar(i) {
   if (i.producto === 'vitalicio') {
     const opciones = [10, 15, 20].filter((n) => validos.includes(n));
     if (!opciones.includes(i.plazo)) {
-      return { error: `Para Vida Vitalicio a los ${i.edad} años los años de pago posibles son: ${opciones.join(', ')} (los pagos terminan a más tardar a los ${L.finMax}).` };
+      return { error: `Para VITAE Siempre a los ${i.edad} años los años de pago posibles son: ${opciones.join(', ')} (los pagos terminan a más tardar a los ${L.finMax}).` };
     }
     pagos = i.plazo;
   } else {

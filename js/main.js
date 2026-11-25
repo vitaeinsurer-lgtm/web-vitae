@@ -12,14 +12,31 @@
   if (!reduceMotion && canObserve) {
     document.documentElement.classList.add('js-motion');
     // Cada grupo (tarjetas, pasos) entra escalonado una sola vez: 0, 60 y 110 ms…
-    var STAGGER = [0, 60, 110, 150];
-    document.querySelectorAll('.products, .steps').forEach(function (group) {
+    var STAGGER = [0, 60, 110, 150, 185];
+    document.querySelectorAll('.products, .steps, .extras-list').forEach(function (group) {
       group.querySelectorAll('.reveal').forEach(function (el, i) { el.style.setProperty('--d', (STAGGER[i] || 150) + 'ms'); });
     });
     var revealObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); revealObs.unobserve(e.target); } });
     }, { rootMargin: '0px 0px -10% 0px' });
-    document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+    document.querySelectorAll('.reveal, .section-head').forEach(function (el) { revealObs.observe(el); });
+
+    // Cifras del inicio: suben desde cero una sola vez, al cargar (900 ms, desaceleración)
+    document.querySelectorAll('[data-count]').forEach(function (el) {
+      var final = Number(el.getAttribute('data-count')), dec = Number(el.getAttribute('data-decimals') || 0);
+      var pre = el.getAttribute('data-prefix') || '', suf = el.getAttribute('data-suffix') || '';
+      var fmt = new Intl.NumberFormat('es-MX', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+      var t0 = null, DUR = 900;
+      el.style.fontVariantNumeric = 'tabular-nums';
+      el.textContent = pre + fmt.format(0) + suf;
+      function step(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min((t - t0) / DUR, 1), e = 1 - Math.pow(1 - p, 4);
+        el.textContent = pre + fmt.format(final * e) + suf;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      setTimeout(function () { requestAnimationFrame(step); }, 250);
+    });
   }
 
   /* ---------- Altura real del encabezado ---------- */
@@ -52,8 +69,8 @@
   /* ---------- Formato ---------- */
   var nf0 = new Intl.NumberFormat('es-MX', { maximumFractionDigits: 0 });
   var money = function (v, cur) { return '$' + nf0.format(Math.round(v)) + (cur ? ' ' + cur : ''); };
-  var NOMBRE = { temporal: 'Vida Temporal', vitalicio: 'Vida Vitalicio', dotal: 'Vida Dotal Mixto' };
-  var CORTO = { temporal: 'Temporal', vitalicio: 'Vitalicio', dotal: 'Dotal Mixto' };
+  var NOMBRE = { temporal: 'VITAE Protege', vitalicio: 'VITAE Siempre', dotal: 'VITAE Tranquilidad' };
+  var CORTO = { temporal: 'Protege', vitalicio: 'Siempre', dotal: 'Tranquilidad' };
 
   /* ---------- Tarjeta de ejemplo del héroe (calculada con el motor) ---------- */
   if (C) {
@@ -75,9 +92,9 @@
   var AGE_MIN = 18, AGE_MAX = 100, X0 = 16, X1 = 584, BAR_H = 16;
   var sx = function (age) { return X0 + (Math.min(age, AGE_MAX) - AGE_MIN) / (AGE_MAX - AGE_MIN) * (X1 - X0); };
   var ROWS = [
-    { key: 'temporal', name: 'Temporal', y: 40 },
-    { key: 'vitalicio', name: 'Vitalicio', y: 102 },
-    { key: 'dotal', name: 'Dotal Mixto', y: 164 }
+    { key: 'temporal', name: 'VITAE Protege', y: 40 },
+    { key: 'vitalicio', name: 'VITAE Siempre', y: 102 },
+    { key: 'dotal', name: 'VITAE Tranquilidad', y: 164 }
   ];
   var parts = {};
   function el(name, attrs, text) {
@@ -105,7 +122,7 @@
     parts.now = svg.appendChild(el('line', { y1: 18, y2: axisY, class: 'now' }));
     parts.nowLbl = svg.appendChild(el('text', { y: 14, class: 'now-lbl', 'text-anchor': 'middle' }, 'Hoy'));
   }
-  /* Fin de la protección de Temporal y Dotal con los mismos límites del cotizador:
+  /* Fin de la protección de VITAE Protege y VITAE Tranquilidad con los mismos límites del cotizador:
      el plazo más largo que cabe hasta la edad máxima, o nada si la edad no se acepta. */
   function finProducto(p, edad, plazo) {
     if (!C) return edad + plazo;
@@ -136,12 +153,12 @@
     parts.temporalSub.textContent = fines.temporal === null ? 'no disponible a esta edad' : 'hasta los ' + fines.temporal + ' años' + tope('temporal');
     parts.vitalicioSub.textContent = 'toda la vida';
     parts.dotalSub.textContent = fines.dotal === null ? 'no disponible a esta edad' : 'hasta los ' + fines.dotal + tope('dotal') + ', y te paga al final';
-    var t = fines.temporal === null ? 'el <strong>Temporal</strong> ya no se contrata a esta edad; '
-      : 'el <strong>Temporal</strong> protege a tu familia hasta tus ' + fines.temporal + ' años' + (tope('temporal') ? ', el máximo para este seguro' : '') + '; ';
-    var d = fines.dotal === null ? 'y el <strong>Dotal Mixto</strong> ya no se contrata a esta edad.'
-      : 'y el <strong>Dotal Mixto</strong> protege hasta tus ' + fines.dotal + ' y, si llegas, te entrega la suma asegurada.';
+    var t = fines.temporal === null ? '<strong>VITAE Protege</strong> ya no se contrata a esta edad; '
+      : '<strong>VITAE Protege</strong> protege a tu familia hasta tus ' + fines.temporal + ' años' + (tope('temporal') ? ', el máximo para este seguro' : '') + '; ';
+    var d = fines.dotal === null ? 'y <strong>VITAE Tranquilidad</strong> ya no se contrata a esta edad.'
+      : 'y <strong>VITAE Tranquilidad</strong> protege hasta tus ' + fines.dotal + ' y, si llegas, te entrega la suma asegurada.';
     summary.innerHTML = 'Con <strong>' + edad + ' años</strong> y un plazo de <strong>' + plazo + ' años</strong>: ' +
-      t + 'el <strong>Vitalicio</strong>, toda tu vida; ' + d;
+      t + '<strong>VITAE Siempre</strong>, toda tu vida; ' + d;
   }
   if (svg && edadIn && plazoIn) {
     buildLifeline();
@@ -192,7 +209,7 @@
     if (!edadField.value) errEdad = 'Escribe tu edad.';
     else if (!Number.isInteger(edad) || edad < L.edadMin || edad > L.edadMax) {
       errEdad = 'El seguro ' + NOMBRE[producto] + ' se cotiza de ' + L.edadMin + ' a ' + L.edadMax + ' años.' +
-        (edad > L.edadMax && producto !== 'vitalicio' && edad <= C.LIMITES.vitalicio.edadMax ? ' Prueba con Vida Vitalicio.' : '');
+        (edad > L.edadMax && producto !== 'vitalicio' && edad <= C.LIMITES.vitalicio.edadMax ? ' Prueba con VITAE Siempre.' : '');
     }
     var rango = L.suma[moneda];
     if (!suma) errSuma = 'Escribe la suma asegurada que quieres para tus beneficiarios.';
