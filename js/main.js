@@ -89,7 +89,7 @@
 
   /* ---------- Tarjeta de ejemplo del héroe (calculada con el motor) ---------- */
   if (C) {
-    var ej = C.cotizar({ producto: 'temporal', edad: 35, sexo: 'F', fumador: false, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' });
+    var ej = C.cotizar({ producto: 'dotal', edad: 34, sexo: 'F', fumador: false, deportista: true, suma: 600000, moneda: 'MXN', plazo: 20, pagos: 15, padecimiento: 'E000001' });
     var sa = document.getElementById('sample-anual');
     var su = document.getElementById('sample-unica');
     if (sa) sa.textContent = money(ej.primaAnual);

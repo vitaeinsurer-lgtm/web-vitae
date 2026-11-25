@@ -208,14 +208,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
 }
 .sample-title { font: 600 .8rem/1.3 var(--f-display); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-text); }
-.sample-who { color: var(--muted); font-size: .97rem; }
+.sample-who { color: var(--muted); font-size: .97rem; line-height: 1.5; }
+.sample-who strong { color: var(--ink); font-weight: 700; }
+.sample-plan { font: 600 .92rem/1.4 var(--f-display); color: var(--accent); padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
 .sample-price { font: 600 clamp(2.1rem, 1.6rem + 1.8vw, 3rem)/1 var(--f-display); font-variant-numeric: tabular-nums; letter-spacing: -.02em; color: var(--ink); }
 .sample-price small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
 .sample-rows { margin: 0; display: grid; border-top: 1px solid var(--line); }
 .sample-rows div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
 .sample-rows dt { color: var(--muted); }
 .dt-hint { display: block; margin-top: 2px; font-size: .8rem; line-height: 1.3; opacity: .8; }
-.sample-rows dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sample-rows dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
 .sample-note { font-size: .85rem; color: var(--muted); }
 
 /* Entrada del héroe: una sola vez, desde un estado ya visible */
