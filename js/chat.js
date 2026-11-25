@@ -40,7 +40,7 @@
   panel.innerHTML =
     '<header class="chat-head">' +
       '<img src="img/vitae-v.png" alt="" width="200" height="175">' +
-      '<div><h2 id="chat-title">Asistente VITAE</h2><p>Con IA · proyecto académico</p></div>' +
+      '<div><h2 id="chat-title">Asistente VITAE</h2><p>Con IA</p></div>' +
       '<button type="button" class="chat-close" aria-label="Cerrar el asistente">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
       '</button>' +
@@ -53,8 +53,7 @@
       '<button type="submit" class="chat-send" aria-label="Enviar pregunta">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>' +
-    '</form>' +
-    '<p class="chat-note">Respuestas generadas con IA (Claude, de Anthropic). Pueden contener errores y las primas son ilustrativas. No compartas datos personales.</p>';
+    '</form>';
 
   document.body.appendChild(fab);
   document.body.appendChild(panel);
