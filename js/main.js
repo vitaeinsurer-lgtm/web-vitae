@@ -199,13 +199,17 @@
     else { input.removeAttribute('aria-invalid'); box.hidden = true; }
   }
 
+  var pagosField = $('q-pagos');
+  var pagosTocados = false;   // el visitante escribió sus propios años de pago
+  var pagosAjuste = '';       // máximo al que se recortaron los años de pago por un cambio de plazo o edad
+
   function readForm() {
     var producto = radio('producto');
     var L = C.LIMITES[producto];
     var edad = Number(edadField.value);
     var suma = parseSuma();
     var moneda = $('q-moneda').value;
-    var errEdad = '', errSuma = '';
+    var errEdad = '', errSuma = '', errPagos = '';
     if (!edadField.value) errEdad = 'Escribe tu edad.';
     else if (!Number.isInteger(edad) || edad < L.edadMin || edad > L.edadMax) {
       errEdad = 'El seguro ' + NOMBRE[producto] + ' se cotiza de ' + L.edadMin + ' a ' + L.edadMax + ' años.' +
@@ -215,61 +219,79 @@
     if (!suma) errSuma = 'Escribe la suma asegurada que quieres para tus beneficiarios.';
     else if (suma < rango[0]) errSuma = 'La suma asegurada mínima es de ' + money(rango[0], moneda) + '.';
     else if (suma > rango[1]) errSuma = 'La suma asegurada máxima en ' + moneda + ' es de ' + money(rango[1], moneda) + '.';
-    var pagosSel = $('q-pagos').value;
-    var pagos = pagosSel === '65' ? 65 - edad : Number(pagosSel);
+    var pagos = Number(pagosField.value), maxP = Number(pagosField.max);
+    if (!errEdad) {
+      if (pagosField.value === '') errPagos = 'Escribe en cuántos años quieres pagar.';
+      else if (!Number.isInteger(pagos) || pagos < 1) errPagos = 'Escribe un número entero de años, desde 1.';
+      else if (pagos > maxP) {
+        errPagos = producto === 'vitalicio'
+          ? 'En VITAE Siempre los pagos terminan a más tardar a los ' + L.finMax + ' años: máximo ' + maxP + ' años de pago.'
+          : 'Los años de pago no pueden pasar del plazo de protección (' + maxP + ' años).';
+      }
+    }
     return {
-      ok: !errEdad && !errSuma, errEdad: errEdad, errSuma: errSuma,
+      ok: !errEdad && !errSuma && !errPagos, errEdad: errEdad, errSuma: errSuma, errPagos: errPagos,
       datos: {
         producto: producto, edad: edad, sexo: radio('sexo'), fumador: radio('fumador') === 'si',
+        deportista: radio('deportista') === 'si',
         suma: suma, moneda: moneda, plazo: Number($('q-plazo').value), pagos: pagos,
-        pagosHasta65: pagosSel === '65', padecimiento: $('q-padec').value,
+        padecimiento: $('q-padec').value,
         nombre: $('q-nombre').value.trim()
       }
     };
   }
 
-  /* Desactiva los plazos y años de pago que pasarían de la edad máxima del seguro.
-     Si la opción elegida deja de caber, toma la más larga que sí cabe y lo explica. */
-  function syncFields() {
+  /* Plazo: desactiva los que pasarían de la edad máxima del seguro y, si el elegido deja de caber,
+     toma el más largo posible. Años de pago: de 1 al plazo (o hasta los 85 en VITAE Siempre). */
+  function syncFields(source) {
     var producto = radio('producto');
     var vit = producto === 'vitalicio';
     $('plazo-field').hidden = vit;
-    $('pagos-field').hidden = !vit;
     var edad = Number(edadField.value);
     var L = C.LIMITES[producto];
     var edadOk = Number.isInteger(edad) && edad >= L.edadMin && edad <= L.edadMax;
     var validos = edadOk ? C.plazosValidos(producto, edad) : C.PLAZOS;
-    var sel = vit ? $('q-pagos') : $('q-plazo');
-    var note = vit ? $('n-pagos') : $('n-plazo');
-    var ajustado = '';
+    var sel = $('q-plazo'), note = $('n-plazo'), ajustado = '';
 
     [].forEach.call(sel.options, function (o) {
-      var años = o.value === '65' ? 65 - edad : Number(o.value);
-      var cabe = !edadOk || (o.value === '65' ? años >= 5 && edad + años <= L.finMax : validos.indexOf(años) !== -1);
+      var cabe = vit || !edadOk || validos.indexOf(Number(o.value)) !== -1;
       o.disabled = !cabe;
-      var base = o.value === '65' ? 'Hasta los 65 años' : o.value + ' años';
-      o.textContent = cabe ? base : base + ' (no disponible a tu edad)';
+      o.textContent = o.value + ' años' + (cabe ? '' : ' (no disponible a tu edad)');
     });
-    if (sel.selectedOptions[0] && sel.selectedOptions[0].disabled) {
-      var ok = [].filter.call(sel.options, function (o) { return !o.disabled && o.value !== '65'; });
+    if (!vit && sel.selectedOptions[0] && sel.selectedOptions[0].disabled) {
+      var ok = [].filter.call(sel.options, function (o) { return !o.disabled; });
       if (ok.length) { sel.value = ok[ok.length - 1].value; ajustado = sel.value; }
     }
-    // El aviso de ajuste se queda visible mientras el plazo siga recortado por la edad
-    var limite = vit ? 'los pagos terminan' : 'la protección termina';
-    var recortado = edadOk && [].some.call(sel.options, function (o) { return o.disabled; });
+    var recortado = !vit && edadOk && [].some.call(sel.options, function (o) { return o.disabled; });
     note.hidden = !recortado;
     if (recortado) {
       note.textContent = (ajustado ? 'Ajustamos a ' + ajustado + ' años. ' : '') +
-        'En ' + NOMBRE[producto] + ' ' + limite + ' a más tardar a los ' + L.finMax + ' años.';
+        'En ' + NOMBRE[producto] + ' la protección termina a más tardar a los ' + L.finMax + ' años.';
     }
+
+    // Años de pago
+    var plazo = Number(sel.value);
+    var maxP = vit ? (edadOk ? C.maxPagos('vitalicio', edad) : 20) : plazo;
+    maxP = Math.max(maxP, 1);
+    pagosField.max = String(maxP);
+    if (pagosAjuste && Number(pagosAjuste) !== maxP) pagosAjuste = ''; // el aviso solo vale mientras siga ese límite
+    if (!pagosTocados) {
+      pagosField.value = String(vit ? Math.min(20, maxP) : maxP);
+    } else if (source !== pagosField && Number(pagosField.value) > maxP) {
+      pagosField.value = String(maxP);
+      pagosAjuste = String(maxP);
+    }
+    $('n-pagos').textContent = (pagosAjuste ? 'Ajustamos a ' + pagosAjuste + ' años. ' : '') + (vit
+      ? 'De 1 a ' + maxP + ' años: los pagos terminan a más tardar a los ' + L.finMax + '.'
+      : 'De 1 a ' + maxP + ' años: no puede pasar del plazo de protección.');
   }
   var pagosTxt = function (n) { return n + (n === 1 ? ' pago' : ' pagos'); };
 
   function buildMessage(d, r) {
     var lineas = [
-      'Hola, VITAE. Les comparto esta cotización de ejemplo del proyecto académico' + (d.nombre ? ' (soy ' + d.nombre + ')' : '') + ':',
+      'Hola, VITAE. Les comparto esta cotización de seguro de vida' + (d.nombre ? ' (soy ' + d.nombre + ')' : '') + ':',
       '• Seguro: ' + NOMBRE[d.producto],
-      '• Edad: ' + d.edad + ' años · ' + (d.sexo === 'F' ? 'Mujer' : 'Hombre') + ' · ' + (d.fumador ? 'Fumador' : 'No fumador'),
+      '• Edad: ' + d.edad + ' años · ' + (d.sexo === 'F' ? 'Mujer' : 'Hombre') + ' · ' + (d.fumador ? 'Fumador' : 'No fumador') + ' · ' + (d.deportista ? 'Hace deporte' : 'No hace deporte'),
       '• Suma asegurada: ' + money(d.suma, d.moneda),
       d.producto === 'vitalicio'
         ? '• Protección: toda la vida · ' + pagosTxt(r.pagos) + ' anuales'
@@ -281,11 +303,13 @@
     return lineas.join('\n');
   }
 
-  function render(animate) {
-    syncFields();
+  function render(animate, source) {
+    syncFields(source);
     var f = readForm();
     showError(edadField, $('e-edad'), f.errEdad);
     showError(sumaField, $('e-suma'), f.errSuma);
+    showError(pagosField, $('e-pagos'), f.errPagos);
+    $('n-pagos').hidden = !!f.errPagos;
     var Lp = C.LIMITES[f.datos.producto], rg = Lp.suma[f.datos.moneda];
     $('n-edad').textContent = 'De ' + Lp.edadMin + ' a ' + Lp.edadMax + ' años en ' + NOMBRE[f.datos.producto] + '.';
     $('n-suma').textContent = 'De ' + money(rg[0]) + ' a ' + money(rg[1], f.datos.moneda) + '.';
@@ -319,7 +343,7 @@
     mx.hidden = d.moneda === 'MXN';
     if (!mx.hidden) mx.textContent = 'Equivale a ' + money(r.primaAnualMXN, 'MXN') + ' al año (tipo de cambio ' + C.TIPO_CAMBIO[d.moneda].valor + ').';
     $('r-unica').textContent = money(r.pnu, d.moneda);
-    $('r-pagos').textContent = r.pagos + (d.pagosHasta65 ? ' (hasta los 65)' : '');
+    $('r-pagos').textContent = r.pagos;
     $('r-cobertura').textContent = d.producto === 'vitalicio' ? 'Toda la vida' : 'Hasta los ' + (d.edad + d.plazo) + ' años';
     $('r-ahorro-row').hidden = d.producto !== 'dotal';
     $('r-ahorro').textContent = money(d.suma, d.moneda);
@@ -342,10 +366,12 @@
         li.innerHTML = '<span class="dot dot-' + p + '"></span><span>' + CORTO[p] + '</span><b>' + motivo + '</b>';
       } else {
         var o = Object.assign({}, d, { producto: p });
-        if (p === 'vitalicio') { if (p !== d.producto) o.pagos = Math.min(20, validos[validos.length - 1]); }
-        else if (validos.indexOf(d.plazo) === -1) o.plazo = validos[validos.length - 1];
+        if (p !== 'vitalicio' && validos.indexOf(d.plazo) === -1) o.plazo = validos[validos.length - 1];
+        // Mismos años de pago, sin pasar del máximo de cada seguro
+        o.pagos = Math.min(d.pagos, C.maxPagos(p, d.edad, o.plazo));
         var rr = C.cotizar(o);
-        var base = p === 'vitalicio' ? pagosTxt(rr.pagos) : o.plazo + ' años';
+        var base = p === 'vitalicio' ? pagosTxt(rr.pagos)
+          : o.plazo + ' años' + (rr.pagos !== o.plazo ? ', ' + pagosTxt(rr.pagos) : '');
         li.innerHTML = '<span class="dot dot-' + p + '"></span><span>' + CORTO[p] + ' <small>· ' + base + '</small></span><b>' + money(rr.primaAnual, d.moneda) + '/año</b>';
       }
       cmp.appendChild(li);
@@ -361,9 +387,14 @@
       var digits = sumaField.value.replace(/\D/g, '').slice(0, 9);
       sumaField.value = digits ? nf0.format(Number(digits)) : '';
     }
-    render(false);
+    if (e.target === pagosField) { pagosTocados = true; pagosAjuste = ''; }
+    render(false, e.target);
   });
-  form.addEventListener('change', function () { render(true); });
+  form.addEventListener('change', function (e) {
+    // Al cambiar de seguro, los años de pago vuelven a su valor natural (todo el plazo, o 20 en VITAE Siempre)
+    if (e.target.name === 'producto') { pagosTocados = false; pagosAjuste = ''; }
+    render(true, e.target);
+  });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
 
   $('r-whatsapp').addEventListener('click', function (e) {
@@ -388,7 +419,7 @@
   document.querySelectorAll('[data-producto]').forEach(function (a) {
     a.addEventListener('click', function () {
       var r = $('q-' + a.getAttribute('data-producto'));
-      if (r) { r.checked = true; render(false); }
+      if (r) { r.checked = true; pagosTocados = false; pagosAjuste = ''; render(false); }
     });
   });
 

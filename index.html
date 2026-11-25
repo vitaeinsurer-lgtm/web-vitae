@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=202611250855">
+  <link rel="stylesheet" href="css/styles.css?v=202611251011">
 </head>
 <body>
   <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -221,7 +221,16 @@
                   <input type="radio" name="fumador" id="q-fuma" value="si"><label for="q-fuma">Sí</label>
                 </div>
               </fieldset>
-              <div class="field">
+              <fieldset class="field">
+                <legend>¿Haces deporte con regularidad?</legend>
+                <div class="seg seg-2">
+                  <input type="radio" name="deportista" id="q-nodep" value="no" checked><label for="q-nodep">No</label>
+                  <input type="radio" name="deportista" id="q-dep" value="si"><label for="q-dep">Sí</label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="field">
                 <label for="q-padec">Padecimiento diagnosticado</label>
                 <select id="q-padec" name="padecimiento">
                   <option value="ninguno">Ninguno</option>
@@ -234,7 +243,6 @@
                   <option value="E000007">Enfermedad renal crónica</option>
                   <option value="E000008">Hipertensión</option>
                 </select>
-              </div>
             </div>
 
             <div class="row row-money">
@@ -254,6 +262,7 @@
               </div>
             </div>
 
+            <div class="row row-plazo">
             <div class="field" id="plazo-field">
               <label for="q-plazo">Plazo de protección</label>
               <select id="q-plazo" name="plazo">
@@ -264,13 +273,12 @@
               <p class="field-note" id="n-plazo" hidden></p>
             </div>
 
-            <div class="field" id="pagos-field" hidden>
+            <div class="field" id="pagos-field">
               <label for="q-pagos">Años de pago de primas</label>
-              <select id="q-pagos" name="pagos">
-                <option value="10">10 años</option><option value="15">15 años</option>
-                <option value="20" selected>20 años</option><option value="65">Hasta los 65 años</option>
-              </select>
-              <p class="field-note" id="n-pagos" hidden></p>
+              <input id="q-pagos" name="pagos" type="number" inputmode="numeric" min="1" max="20" step="1" value="20" required aria-describedby="n-pagos e-pagos">
+              <p class="field-note" id="n-pagos"></p>
+              <p class="field-error" id="e-pagos" hidden></p>
+            </div>
             </div>
 
             <div class="field">
@@ -343,7 +351,7 @@
           <h3>Lo que define el costo de tu seguro</h3>
           <p>Tu prima se calcula de forma individual con estos datos:</p>
           <ul class="chips">
-            <li>Edad</li><li>Suma asegurada</li><li>Plazo</li><li>Moneda</li><li>Sexo</li><li>Si fumas o no</li><li>Ocupación y actividades</li><li>Estado de salud</li>
+            <li>Edad</li><li>Suma asegurada</li><li>Plazo</li><li>Años de pago</li><li>Moneda</li><li>Sexo</li><li>Si fumas o no</li><li>Si haces deporte</li><li>Ocupación y actividades</li><li>Estado de salud</li>
           </ul>
           <p class="note">Tener una enfermedad previa no significa que te rechacemos. Cada caso se revisa según el diagnóstico, su control y la información médica disponible.</p>
         </div>
@@ -515,8 +523,8 @@
     </div>
   </footer>
 
-  <script src="js/cotizador.js?v=202611250855"></script>
-  <script src="js/main.js?v=202611250855"></script>
-  <script src="js/chat.js?v=202611250256"></script>
+  <script src="js/cotizador.js?v=202611251011"></script>
+  <script src="js/main.js?v=202611251011"></script>
+  <script src="js/chat.js?v=202611251011"></script>
 </body>
 </html>

@@ -31,11 +31,17 @@ const COTIZAR_TOOL = {
       edad: { type: 'integer', description: 'Edad actual del asegurado en años' },
       sexo: { type: 'string', enum: ['F', 'M'], description: 'F = mujer, M = hombre' },
       fumador: { type: 'boolean', description: 'true si fuma' },
+      deportista: { type: 'boolean', description: 'true si hace deporte con regularidad (reduce 1 año la edad de cálculo). Si no lo dice, false.' },
       suma: { type: 'number', description: 'Suma asegurada en la moneda indicada' },
       moneda: { type: 'string', enum: ['MXN', 'USD', 'EUR'] },
       plazo: {
         type: 'integer',
-        description: 'VITAE Protege y VITAE Tranquilidad: años de protección (5 a 40, múltiplos de 5). VITAE Siempre: años de pago de primas (10, 15 o 20).'
+        description: 'VITAE Protege y VITAE Tranquilidad: años de protección (5 a 40, múltiplos de 5). VITAE Siempre: no aplica, envía 0.'
+      },
+      pagos: {
+        type: 'integer',
+        description: 'Años de pago de primas, cualquier entero desde 1. VITAE Protege y VITAE Tranquilidad: no puede pasar del plazo; si no lo dicen, igual al plazo. ' +
+          'VITAE Siempre: los pagos terminan a más tardar a los 85 años de edad; si no lo dicen, 20 (o el máximo posible si es menor).'
       },
       padecimiento: {
         type: 'string',
@@ -44,7 +50,7 @@ const COTIZAR_TOOL = {
           'E000005 obesidad, E000006 cardiopatía controlada, E000007 enfermedad renal crónica, E000008 hipertensión'
       }
     },
-    required: ['producto', 'edad', 'sexo', 'fumador', 'suma', 'moneda', 'plazo', 'padecimiento'],
+    required: ['producto', 'edad', 'sexo', 'fumador', 'deportista', 'suma', 'moneda', 'plazo', 'pagos', 'padecimiento'],
     additionalProperties: false
   }
 };
@@ -61,21 +67,23 @@ export function ejecutarCotizar(i) {
   if (!(i.suma >= rango[0] && i.suma <= rango[1])) {
     return { error: `La suma asegurada en ${i.moneda} para ${NOMBRE[i.producto]} va de ${rango[0]} a ${rango[1]}.` };
   }
-  const validos = C.plazosValidos(i.producto, i.edad);
-  let plazo = 20, pagos = 20;
-  if (i.producto === 'vitalicio') {
-    const opciones = [10, 15, 20].filter((n) => validos.includes(n));
-    if (!opciones.includes(i.plazo)) {
-      return { error: `Para VITAE Siempre a los ${i.edad} años los años de pago posibles son: ${opciones.join(', ')} (los pagos terminan a más tardar a los ${L.finMax}).` };
-    }
-    pagos = i.plazo;
-  } else {
+  let plazo = 0;
+  if (i.producto !== 'vitalicio') {
+    const validos = C.plazosValidos(i.producto, i.edad);
     if (!validos.includes(i.plazo)) {
       return { error: `Para ${NOMBRE[i.producto]} a los ${i.edad} años los plazos posibles son: ${validos.join(', ')} años (la protección termina a más tardar a los ${L.finMax}).` };
     }
     plazo = i.plazo;
   }
-  const r = C.cotizar({ producto: i.producto, edad: i.edad, sexo: i.sexo, fumador: i.fumador, suma: i.suma, moneda: i.moneda, plazo, pagos, padecimiento: i.padecimiento });
+  const maxP = C.maxPagos(i.producto, i.edad, plazo);
+  if (!Number.isInteger(i.pagos) || i.pagos < 1 || i.pagos > maxP) {
+    return {
+      error: i.producto === 'vitalicio'
+        ? `En VITAE Siempre a los ${i.edad} años se puede pagar de 1 a ${maxP} años (los pagos terminan a más tardar a los ${L.finMax}).`
+        : `Los años de pago van de 1 al plazo de protección: de 1 a ${maxP} años.`
+    };
+  }
+  const r = C.cotizar({ producto: i.producto, edad: i.edad, sexo: i.sexo, fumador: i.fumador, deportista: i.deportista, suma: i.suma, moneda: i.moneda, plazo, pagos: i.pagos, padecimiento: i.padecimiento });
   const redondeo = (v) => Math.round(v);
   return {
     seguro: NOMBRE[i.producto],
@@ -86,6 +94,7 @@ export function ejecutarCotizar(i) {
     proteccion: i.producto === 'vitalicio' ? 'toda la vida' : `hasta los ${i.edad + plazo} años`,
     recibe_al_vencimiento: i.producto === 'dotal' ? i.suma : null,
     extraprima_porcentaje: Math.round(r.extraprima * 100),
+    ajuste_deportista: i.deportista ? 'Se redujo 1 año la edad de cálculo por condición deportiva.' : null,
     prima_anual_mxn: i.moneda === 'MXN' ? null : redondeo(r.primaAnualMXN),
     nota: 'Prima neta ilustrativa de un proyecto académico; no incluye gastos de adquisición y administración.'
   };

@@ -32,7 +32,7 @@ export function startMock(port = 0) {
     if (/cotiza/i.test(text)) {
       const edad = /edad (\d+)/.exec(text) ? Number(/edad (\d+)/.exec(text)[1]) : 35;
       return send([thinking, { type: 'tool_use', id: 'toolu_mock', name: 'cotizar', input: {
-        producto: 'temporal', edad, sexo: 'F', fumador: false, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno'
+        producto: 'temporal', edad, sexo: 'F', fumador: false, deportista: false, suma: 1000000, moneda: 'MXN', plazo: 20, pagos: 20, padecimiento: 'ninguno'
       } }], 'tool_use');
     }
     return send([thinking, { type: 'text', text: 'Hola, soy el asistente de VITAE.' }], 'end_turn');

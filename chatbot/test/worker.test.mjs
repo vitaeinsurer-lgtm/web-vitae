@@ -18,13 +18,22 @@ const call = (body, { origin = ORIGIN, method = 'POST', path = '/chat', ip } = {
 
 try {
   // Herramienta: mismas cifras que el motor validado contra el Excel
-  const r = ejecutarCotizar({ producto: 'temporal', edad: 35, sexo: 'F', fumador: false, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' });
-  const ref = C.cotizar({ producto: 'temporal', edad: 35, sexo: 'F', fumador: false, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' });
+  const r = ejecutarCotizar({ producto: 'temporal', edad: 35, sexo: 'F', fumador: false, deportista: false, pagos: 20, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' });
+  const ref = C.cotizar({ producto: 'temporal', edad: 35, sexo: 'F', fumador: false, deportista: false, pagos: 20, suma: 1000000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' });
   check('cotizar: prima igual al motor del sitio', r.prima_anual === Math.round(ref.primaAnual), `${r.prima_anual} vs ${Math.round(ref.primaAnual)}`);
-  check('cotizar: rechaza Temporal a los 71', /18 a 70/.test(ejecutarCotizar({ producto: 'temporal', edad: 71, sexo: 'M', fumador: false, suma: 500000, moneda: 'MXN', plazo: 10, padecimiento: 'ninguno' }).error || ''));
-  check('cotizar: rechaza plazo que pasa de los 85', /5, 10, 15/.test(ejecutarCotizar({ producto: 'temporal', edad: 70, sexo: 'M', fumador: false, suma: 500000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' }).error || ''));
-  check('cotizar: rechaza suma fuera de rango', /100000/.test(ejecutarCotizar({ producto: 'dotal', edad: 30, sexo: 'F', fumador: false, suma: 50000, moneda: 'MXN', plazo: 10, padecimiento: 'ninguno' }).error || ''));
-  check('cotizar: Vitalicio a los 75 solo 10 años de pago', /10 \(/.test(ejecutarCotizar({ producto: 'vitalicio', edad: 75, sexo: 'F', fumador: false, suma: 500000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' }).error || ''));
+  check('cotizar: rechaza Temporal a los 71', /18 a 70/.test(ejecutarCotizar({ producto: 'temporal', edad: 71, sexo: 'M', fumador: false, deportista: false, pagos: 20, suma: 500000, moneda: 'MXN', plazo: 10, padecimiento: 'ninguno' }).error || ''));
+  check('cotizar: rechaza plazo que pasa de los 85', /5, 10, 15/.test(ejecutarCotizar({ producto: 'temporal', edad: 70, sexo: 'M', fumador: false, deportista: false, pagos: 20, suma: 500000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' }).error || ''));
+  check('cotizar: rechaza suma fuera de rango', /100000/.test(ejecutarCotizar({ producto: 'dotal', edad: 30, sexo: 'F', fumador: false, deportista: false, pagos: 20, suma: 50000, moneda: 'MXN', plazo: 10, padecimiento: 'ninguno' }).error || ''));
+  check('cotizar: Vitalicio a los 75 solo hasta 10 años de pago', /de 1 a 10/.test(ejecutarCotizar({ producto: 'vitalicio', edad: 75, sexo: 'F', fumador: false, deportista: false, pagos: 20, suma: 500000, moneda: 'MXN', plazo: 20, padecimiento: 'ninguno' }).error || ''));
+
+  const base = { producto: 'temporal', edad: 40, sexo: 'F', fumador: false, deportista: false, suma: 1000000, moneda: 'MXN', plazo: 20, pagos: 20, padecimiento: 'ninguno' };
+  const p7 = ejecutarCotizar({ ...base, pagos: 7 });
+  check('cotizar: acepta años de pago libres (7) y coincide con el motor', p7.pagos_anuales === 7 && p7.prima_anual === Math.round(C.cotizar({ ...base, pagos: 7 }).primaAnual), JSON.stringify(p7));
+  check('cotizar: rechaza más años de pago que el plazo', /de 1 a 20/.test(ejecutarCotizar({ ...base, pagos: 21 }).error || ''));
+  check('cotizar: rechaza 0 años de pago', !!ejecutarCotizar({ ...base, pagos: 0 }).error);
+  const dep = ejecutarCotizar({ ...base, deportista: true });
+  check('cotizar: deportista baja la prima y lo explica', dep.prima_anual < ejecutarCotizar(base).prima_anual && /1 año/.test(dep.ajuste_deportista || ''));
+  check('cotizar: VITAE Siempre a los 70 permite hasta 15 años de pago', !ejecutarCotizar({ ...base, producto: 'vitalicio', edad: 70, plazo: 0, pagos: 15 }).error && /1 a 15/.test(ejecutarCotizar({ ...base, producto: 'vitalicio', edad: 70, plazo: 0, pagos: 16 }).error || ''));
 
   // Validación de mensajes
   check('mensajes: rechaza vacío', validarMensajes([]) === null);
@@ -52,6 +61,7 @@ try {
   check('API: esfuerzo low y max_tokens con margen', req0.output_config && req0.output_config.effort === 'low' && req0.max_tokens >= 1024);
   check('API: prompt del sistema en caché', Array.isArray(req0.system) && req0.system[0].cache_control && req0.system[0].cache_control.type === 'ephemeral');
   check('API: herramienta cotizar estricta', req0.tools && req0.tools[0].name === 'cotizar' && req0.tools[0].strict === true && req0.tools[0].input_schema.additionalProperties === false);
+  check('API: la herramienta pide deportista y años de pago', ['deportista', 'pagos'].every((k) => req0.tools[0].input_schema.required.includes(k)));
   check('API: no envía temperature ni prefill', !('temperature' in req0) && req0.messages[req0.messages.length - 1].role === 'user');
   const hdr = mock.requests[n0].headers;
   const enCabecera = hdr['x-api-key'] === 'sk-ant-prueba' || hdr.authorization === 'Bearer sk-ant-prueba';

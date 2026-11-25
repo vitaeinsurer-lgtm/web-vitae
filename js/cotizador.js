@@ -52,17 +52,27 @@
 
   function q(age) { return age >= EDAD_LIMITE ? 1 : QX[age]; }
 
-  function edadTarificacion(edad, sexo, fumador) {
-    return edad - (sexo === 'F' ? 3 : 0) - (fumador ? 0 : 2);
+  /* Ajustes de la nota técnica (6.4): mujer −3 años, no fumador −2 años y condición deportiva −1 año.
+     El Excel interno no tiene la variable deportiva (la cartera no la registra): sin ella, el cálculo es idéntico al Excel. */
+  function edadTarificacion(edad, sexo, fumador, deportista) {
+    return edad - (sexo === 'F' ? 3 : 0) - (fumador ? 0 : 2) - (deportista ? 1 : 0);
+  }
+
+  /* Años de pago posibles: de 1 hasta el plazo de protección (Temporal y Dotal);
+     en Vitalicio, hasta que los pagos terminen a la edad máxima (85). */
+  function maxPagos(producto, edad, plazo) {
+    if (producto === 'vitalicio') return Math.max(LIMITES.vitalicio.finMax - edad, 0);
+    return plazo;
   }
 
   /* opts: { producto: 'temporal'|'vitalicio'|'dotal', edad, sexo: 'F'|'M', fumador: bool,
              suma, moneda: 'MXN'|'USD'|'EUR', plazo (años, Temporal/Dotal),
-             pagos (años de pago de primas; Vitalicio), padecimiento (clave de EXTRAPRIMAS),
+             pagos (años de pago de primas, de 1 al plazo; por omisión, todo el plazo o 20 en Vitalicio),
+             deportista: bool, padecimiento (clave de EXTRAPRIMAS),
              sinAjusteEdad (solo para pruebas) } */
   function cotizar(opts) {
     var producto = opts.producto;
-    var x = opts.sinAjusteEdad ? opts.edad : edadTarificacion(opts.edad, opts.sexo, opts.fumador);
+    var x = opts.sinAjusteEdad ? opts.edad : edadTarificacion(opts.edad, opts.sexo, opts.fumador, opts.deportista);
     var sa = opts.suma;
     var v = 1 / (1 + TASA);
     var ep = (EXTRAPRIMAS[opts.padecimiento] || EXTRAPRIMAS.ninguno).extra;
@@ -84,7 +94,7 @@
     var pnu = pnuMuerte + pnuVida;
 
     // Anualidad anticipada del periodo de pagos (m ≤ n)
-    var m = producto === 'vitalicio' ? Math.min(opts.pagos || 20, EDAD_LIMITE - x + 1) : n;
+    var m = producto === 'vitalicio' ? Math.min(opts.pagos || 20, EDAD_LIMITE - x + 1) : Math.min(opts.pagos || n, n);
     var a = 0, p = 1;
     for (var j = 0; j < m; j++) {
       a += p * Math.pow(v, j);
@@ -107,6 +117,6 @@
     };
   }
 
-  root.VitaeCotizador = { cotizar: cotizar, EXTRAPRIMAS: EXTRAPRIMAS, TIPO_CAMBIO: TIPO_CAMBIO, TASA: TASA, LIMITES: LIMITES, PLAZOS: PLAZOS, plazosValidos: plazosValidos };
+  root.VitaeCotizador = { cotizar: cotizar, EXTRAPRIMAS: EXTRAPRIMAS, TIPO_CAMBIO: TIPO_CAMBIO, TASA: TASA, LIMITES: LIMITES, PLAZOS: PLAZOS, plazosValidos: plazosValidos, maxPagos: maxPagos };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.VitaeCotizador;
 })(typeof window !== 'undefined' ? window : globalThis);
