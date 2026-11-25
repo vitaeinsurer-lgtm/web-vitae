@@ -33,6 +33,23 @@
     EUR: { valor: 20.47, fuente: 'Cotización del 5-oct-2026 (aproximada)' }
   };
 
+  /* Límites de contratación observados en la cartera (hoja Cartera, 17,640 pólizas):
+     edad de ingreso, edad máxima al terminar el plazo y suma asegurada por moneda.
+     Vitalicio: los pagos de prima terminan a más tardar a los 85, igual que el Temporal más largo. */
+  var LIMITES = {
+    temporal:  { edadMin: 18, edadMax: 70, finMax: 85, suma: { MXN: [100000, 8000000], USD: [10000, 500000], EUR: [10000, 203000] } },
+    vitalicio: { edadMin: 18, edadMax: 75, finMax: 85, suma: { MXN: [100000, 8000000], USD: [10000, 500000], EUR: [10000, 300000] } },
+    dotal:     { edadMin: 18, edadMax: 60, finMax: 80, suma: { MXN: [100000, 8000000], USD: [10000, 500000], EUR: [20000, 150000] } }
+  };
+  var PLAZOS = [5, 10, 15, 20, 25, 30, 35, 40];
+
+  /* Plazos (Temporal y Dotal) o años de pago (Vitalicio) que caben antes de la edad máxima */
+  function plazosValidos(producto, edad) {
+    var L = LIMITES[producto];
+    if (!L || edad < L.edadMin || edad > L.edadMax) return [];
+    return PLAZOS.filter(function (p) { return edad + p <= L.finMax; });
+  }
+
   function q(age) { return age >= EDAD_LIMITE ? 1 : QX[age]; }
 
   function edadTarificacion(edad, sexo, fumador) {
@@ -90,6 +107,6 @@
     };
   }
 
-  root.VitaeCotizador = { cotizar: cotizar, EXTRAPRIMAS: EXTRAPRIMAS, TIPO_CAMBIO: TIPO_CAMBIO, TASA: TASA };
+  root.VitaeCotizador = { cotizar: cotizar, EXTRAPRIMAS: EXTRAPRIMAS, TIPO_CAMBIO: TIPO_CAMBIO, TASA: TASA, LIMITES: LIMITES, PLAZOS: PLAZOS, plazosValidos: plazosValidos };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.VitaeCotizador;
 })(typeof window !== 'undefined' ? window : globalThis);

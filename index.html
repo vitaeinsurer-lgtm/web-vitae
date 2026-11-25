@@ -91,7 +91,7 @@
         </header>
 
         <div class="products">
-          <article class="product" id="temporal">
+          <article class="product reveal" id="temporal">
             <div class="product-top">
               <span class="tag">Protección por un plazo</span>
               <h3>Vida Temporal</h3>
@@ -105,7 +105,7 @@
             <a class="product-link" href="#cotiza" data-producto="temporal">Cotizar Temporal</a>
           </article>
 
-          <article class="product" id="vitalicio">
+          <article class="product reveal" id="vitalicio">
             <div class="product-top">
               <span class="tag">Protección de por vida</span>
               <h3>Vida Vitalicio</h3>
@@ -119,7 +119,7 @@
             <a class="product-link" href="#cotiza" data-producto="vitalicio">Cotizar Vitalicio</a>
           </article>
 
-          <article class="product" id="dotal">
+          <article class="product reveal" id="dotal">
             <div class="product-top">
               <span class="tag">Protección y ahorro</span>
               <h3>Vida Dotal Mixto</h3>
@@ -199,7 +199,8 @@
             <div class="row">
               <div class="field">
                 <label for="q-edad">Edad</label>
-                <input id="q-edad" name="edad" type="number" inputmode="numeric" min="18" max="75" value="35" required aria-describedby="e-edad">
+                <input id="q-edad" name="edad" type="number" inputmode="numeric" min="18" max="75" value="35" required aria-describedby="n-edad e-edad">
+                <p class="field-note" id="n-edad"></p>
                 <p class="field-error" id="e-edad" hidden></p>
               </div>
               <fieldset class="field">
@@ -238,7 +239,8 @@
             <div class="row row-money">
               <div class="field">
                 <label for="q-suma">Suma asegurada</label>
-                <input id="q-suma" name="suma" inputmode="numeric" autocomplete="off" value="1,000,000" required aria-describedby="e-suma">
+                <input id="q-suma" name="suma" inputmode="numeric" autocomplete="off" value="1,000,000" required aria-describedby="n-suma e-suma">
+                <p class="field-note" id="n-suma"></p>
                 <p class="field-error" id="e-suma" hidden></p>
               </div>
               <div class="field">
@@ -258,6 +260,7 @@
                 <option value="20" selected>20 años</option><option value="25">25 años</option><option value="30">30 años</option>
                 <option value="35">35 años</option><option value="40">40 años</option>
               </select>
+              <p class="field-note" id="n-plazo" hidden></p>
             </div>
 
             <div class="field" id="pagos-field" hidden>
@@ -266,6 +269,7 @@
                 <option value="10">10 años</option><option value="15">15 años</option>
                 <option value="20" selected>20 años</option><option value="65">Hasta los 65 años</option>
               </select>
+              <p class="field-note" id="n-pagos" hidden></p>
             </div>
 
             <div class="field">
@@ -300,6 +304,12 @@
           </div>
         </div>
       </div>
+      <!-- Celular: la prima a la vista mientras llenas el formulario -->
+      <a class="peek" id="peek" href="#result" aria-hidden="true" tabindex="-1">
+        <span class="peek-label">Tu prima anual estimada</span>
+        <span class="peek-price" id="peek-price">—</span>
+        <span class="peek-go">Ver detalle</span>
+      </a>
     </section>
 
     <!-- COBERTURAS -->
@@ -346,22 +356,22 @@
           <h2>De la cotización a tu póliza en cuatro pasos</h2>
         </header>
         <ol class="steps">
-          <li>
+          <li class="reveal">
             <span class="step-n" aria-hidden="true">1</span>
             <h3>Calcula tu prima</h3>
             <p>Elige seguro, suma asegurada, moneda y plazo, y envíanos tu cotización por WhatsApp.</p>
           </li>
-          <li>
+          <li class="reveal">
             <span class="step-n" aria-hidden="true">2</span>
             <h3>Llena tu solicitud</h3>
             <p>Respondes un cuestionario sobre tu salud, hábitos y actividades. Declarar todo con claridad protege tu pago.</p>
           </li>
-          <li>
+          <li class="reveal">
             <span class="step-n" aria-hidden="true">3</span>
             <h3>Evaluamos tu caso</h3>
             <p>Revisamos tu información para definir las condiciones de tu póliza y su prima final.</p>
           </li>
-          <li>
+          <li class="reveal">
             <span class="step-n" aria-hidden="true">4</span>
             <h3>Recibes tu póliza</h3>
             <p>Con tu carátula y condiciones generales: asegurado, beneficiarios, suma, prima y fechas.</p>
