@@ -1,0 +1,11 @@
+# Cloudflare Worker del asistente VITAE.
+# La clave de Anthropic NO va aquí: se guarda como secreto con
+#   npx wrangler secret put ANTHROPIC_API_KEY
+name = "vitae-chatbot"
+main = "src/worker.js"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Orígenes que pueden usar el asistente (separados por coma)
+ALLOWED_ORIGINS = "https://vitaeinsurer-lgtm.github.io,http://127.0.0.1:5190,http://localhost:5190"

@@ -1,0 +1,17 @@
+{
+  "name": "vitae-chatbot",
+  "private": true,
+  "type": "module",
+  "description": "Intermediario del asistente con IA de VITAE: guarda la clave de la API y habla con Claude Haiku 5.5.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test/worker.test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.8.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.160.0"
+  }
+}
