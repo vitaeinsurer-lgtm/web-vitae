@@ -404,6 +404,7 @@
         li.innerHTML = '<span class="dot dot-' + p + '"></span><span>' + CORTO[p] + ' <small>· ' + base + '</small></span><b>' + money(rr.primaAnual, d.moneda) + '/año</b>';
       }
       cmp.appendChild(li);
+      if (p === 'dotal') $('r-compare-note').hidden = !!motivo;
     });
 
     lastText = buildMessage(d, r);

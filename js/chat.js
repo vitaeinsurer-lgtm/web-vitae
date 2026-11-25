@@ -58,6 +58,13 @@
   document.body.appendChild(fab);
   document.body.appendChild(panel);
 
+  // Mientras el cotizador pasa por la parte baja de la pantalla, el botón se reduce a solo el ícono
+  var cotiza = document.getElementById('cotiza');
+  if (cotiza && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { fab.classList.toggle('is-tucked', es[0].isIntersecting); },
+      { rootMargin: '-75% 0px 0px 0px' }).observe(cotiza);
+  }
+
   var log = panel.querySelector('#chat-log');
   var form = panel.querySelector('#chat-form');
   var input = panel.querySelector('#chat-input');
