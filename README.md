@@ -1,7 +1,5 @@
 # VITAE Seguros de Vida — sitio web
 
-Proyecto académico. VITAE no es una institución de seguros autorizada por la CNSF y sus productos no pueden contratarse.
-
 Sitio estático (HTML, CSS y JavaScript, sin compilación):
 
 - `index.html` — la página.
