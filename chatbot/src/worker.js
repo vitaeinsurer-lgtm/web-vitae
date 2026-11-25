@@ -2,7 +2,7 @@
 // - Guarda la clave de Anthropic como secreto: nunca llega al navegador.
 // - Solo acepta peticiones del sitio de VITAE, con tamaño y frecuencia limitados.
 // - Usa Claude Opus 5.5 con una herramienta "cotizar" que corre el mismo motor del
-//   cotizador del sitio (validado contra el Excel interno), para no inventar primas.
+//   cotizador del sitio (validado contra el cotizador de la dirección, Cotizador_VITAEEE.xlsx), para no inventar primas.
 import Anthropic from '@anthropic-ai/sdk';
 import C from '../../js/cotizador.js';
 import { SYSTEM_PROMPT } from './prompt.js';
@@ -20,8 +20,8 @@ const NOMBRE = { temporal: 'VITAE Protege', vitalicio: 'VITAE Siempre', dotal: '
 const COTIZAR_TOOL = {
   name: 'cotizar',
   description:
-    'Calcula la prima neta estimada de un seguro de VITAE con la tarifa técnica del proyecto ' +
-    '(tabla CNSF M 2013, interés técnico 6%). Úsala para cualquier cifra de prima. ' +
+    'Calcula la prima estimada de un seguro de VITAE con la tarifa de VITAE (tabla de mortalidad CNSF, interés del 5%, ' +
+    'extraprima por condiciones médicas y recargo por gastos administrativos). Úsala para cualquier cifra de prima. ' +
     'Devuelve prima anual, pago único equivalente y número de pagos, o un error si los datos están fuera de los límites.',
   strict: true,
   input_schema: {
@@ -40,17 +40,18 @@ const COTIZAR_TOOL = {
       },
       pagos: {
         type: 'integer',
-        description: 'Años de pago de primas, cualquier entero desde 1. VITAE Protege y VITAE Tranquilidad: no puede pasar del plazo; si no lo dicen, igual al plazo. ' +
-          'VITAE Siempre: los pagos terminan a más tardar a los 85 años de edad; si no lo dicen, 20 (o el máximo posible si es menor).'
+        description: 'Años de pago de primas. VITAE Protege y VITAE Tranquilidad: entero de 1 al plazo; si no lo dicen, igual al plazo. ' +
+          'VITAE Siempre: 0 = pagos de por vida (opción por omisión si no lo dicen), o un entero desde 1 con pagos que terminan a más tardar a los 85 años de edad.'
       },
-      padecimiento: {
-        type: 'string',
-        enum: ['ninguno', 'E000001', 'E000002', 'E000003', 'E000004', 'E000005', 'E000006', 'E000007', 'E000008'],
-        description: 'ninguno, E000001 hipotiroidismo, E000002 asma crónica, E000003 dislipidemia, E000004 diabetes tipo 2, ' +
-          'E000005 obesidad, E000006 cardiopatía controlada, E000007 enfermedad renal crónica, E000008 hipertensión'
+      padecimientos: {
+        type: 'array',
+        items: { type: 'string', enum: ['E000001', 'E000002', 'E000003', 'E000004', 'E000005', 'E000006', 'E000007', 'E000008'] },
+        description: 'Condiciones médicas diagnosticadas (pueden ser varias; sus porcentajes se suman). Lista vacía si no tiene ninguna. ' +
+          'E000001 hipertiroidismo, E000002 asma crónica controlada, E000003 dislipidemia, E000004 diabetes tipo II controlada, ' +
+          'E000005 obesidad, E000006 cardiopatía coronaria estable, E000007 enfermedad renal crónica, E000008 hipertensión controlada'
       }
     },
-    required: ['producto', 'edad', 'sexo', 'fumador', 'deportista', 'suma', 'moneda', 'plazo', 'pagos', 'padecimiento'],
+    required: ['producto', 'edad', 'sexo', 'fumador', 'deportista', 'suma', 'moneda', 'plazo', 'pagos', 'padecimientos'],
     additionalProperties: false
   }
 };
@@ -76,27 +77,32 @@ export function ejecutarCotizar(i) {
     plazo = i.plazo;
   }
   const maxP = C.maxPagos(i.producto, i.edad, plazo);
-  if (!Number.isInteger(i.pagos) || i.pagos < 1 || i.pagos > maxP) {
+  const deVida = i.producto === 'vitalicio' && i.pagos === 0;
+  if (!deVida && (!Number.isInteger(i.pagos) || i.pagos < 1 || i.pagos > maxP)) {
     return {
       error: i.producto === 'vitalicio'
-        ? `En VITAE Siempre a los ${i.edad} años se puede pagar de 1 a ${maxP} años (los pagos terminan a más tardar a los ${L.finMax}).`
+        ? `En VITAE Siempre a los ${i.edad} años se puede pagar de por vida (pagos = 0) o de 1 a ${maxP} años (los pagos terminan a más tardar a los ${L.finMax}).`
         : `Los años de pago van de 1 al plazo de protección: de 1 a ${maxP} años.`
     };
   }
-  const r = C.cotizar({ producto: i.producto, edad: i.edad, sexo: i.sexo, fumador: i.fumador, deportista: i.deportista, suma: i.suma, moneda: i.moneda, plazo, pagos: i.pagos, padecimiento: i.padecimiento });
+  const padecimientos = Array.isArray(i.padecimientos) ? i.padecimientos.filter((k) => C.EXTRAPRIMAS[k] && k !== 'ninguno') : [];
+  const r = C.cotizar({ producto: i.producto, edad: i.edad, sexo: i.sexo, fumador: i.fumador, deportista: i.deportista, suma: i.suma, moneda: i.moneda, plazo, pagos: deVida ? 'vida' : i.pagos, padecimientos });
   const redondeo = (v) => Math.round(v);
   return {
     seguro: NOMBRE[i.producto],
     moneda: i.moneda,
     prima_anual: redondeo(r.primaAnual),
     pago_unico_equivalente: redondeo(r.pnu),
-    pagos_anuales: r.pagos,
+    pagos_anuales: r.pagosDeVida ? 'de por vida' : r.pagos,
     proteccion: i.producto === 'vitalicio' ? 'toda la vida' : `hasta los ${i.edad + plazo} años`,
     recibe_al_vencimiento: i.producto === 'dotal' ? i.suma : null,
+    condiciones_medicas: padecimientos.map((k) => C.EXTRAPRIMAS[k].nombre),
     extraprima_porcentaje: Math.round(r.extraprima * 100),
+    gastos_administrativos_porcentaje: Math.round(r.recargo * 100),
+    prima_pura_anual: redondeo(r.primaAnualPura),
     ajuste_deportista: i.deportista ? 'Se redujo 1 año la edad de cálculo por condición deportiva.' : null,
     prima_anual_mxn: i.moneda === 'MXN' ? null : redondeo(r.primaAnualMXN),
-    nota: 'Prima neta estimada; no incluye gastos de adquisición y administración. La prima final se define al evaluar la solicitud.'
+    nota: 'Prima estimada que incluye los gastos administrativos y la extraprima médica. La prima final se define al evaluar la solicitud.'
   };
 }
 

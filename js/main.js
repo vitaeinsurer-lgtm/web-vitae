@@ -89,7 +89,7 @@
 
   /* ---------- Tarjeta de ejemplo del héroe (calculada con el motor) ---------- */
   if (C) {
-    var ej = C.cotizar({ producto: 'dotal', edad: 34, sexo: 'F', fumador: false, deportista: true, suma: 600000, moneda: 'MXN', plazo: 20, pagos: 15, padecimiento: 'E000001' });
+    var ej = C.cotizar({ producto: 'dotal', edad: 34, sexo: 'F', fumador: false, deportista: true, suma: 500000, moneda: 'MXN', plazo: 20, pagos: 20, padecimientos: ['E000001'] });
     var sa = document.getElementById('sample-anual');
     var su = document.getElementById('sample-unica');
     if (sa) sa.textContent = money(ej.primaAnual);
@@ -248,8 +248,9 @@
     if (!suma) errSuma = 'Escribe la suma asegurada que quieres para tus beneficiarios.';
     else if (suma < rango[0]) errSuma = 'La suma asegurada mínima es de ' + money(rango[0], moneda) + '.';
     else if (suma > rango[1]) errSuma = 'La suma asegurada máxima en ' + moneda + ' es de ' + money(rango[1], moneda) + '.';
-    var pagos = Number(pagosField.value), maxP = Number(pagosField.max);
-    if (!errEdad) {
+    var deVida = producto === 'vitalicio' && radio('pagosmodo') === 'vida';
+    var pagos = deVida ? 'vida' : Number(pagosField.value), maxP = Number(pagosField.max);
+    if (!errEdad && !deVida) {
       if (pagosField.value === '') errPagos = 'Escribe en cuántos años quieres pagar.';
       else if (!Number.isInteger(pagos) || pagos < 1) errPagos = 'Escribe un número entero de años, desde 1.';
       else if (pagos > maxP) {
@@ -264,7 +265,7 @@
         producto: producto, edad: edad, sexo: radio('sexo'), fumador: radio('fumador') === 'si',
         deportista: radio('deportista') === 'si',
         suma: suma, moneda: moneda, plazo: Number($('q-plazo').value), pagos: pagos,
-        padecimiento: $('q-padec').value,
+        padecimientos: [].map.call(form.querySelectorAll('input[name="padecimiento"]:checked'), function (c) { return c.value; }),
         nombre: $('q-nombre').value.trim()
       }
     };
@@ -298,7 +299,11 @@
         'En ' + NOMBRE[producto] + ' la protección termina a más tardar a los ' + L.finMax + ' años.';
     }
 
-    // Años de pago
+    // Años de pago (VITAE Siempre: de por vida, como el Excel, o un número de años)
+    var deVida = vit && radio('pagosmodo') === 'vida';
+    $('pagos-modo').hidden = !vit;
+    $('pagos-stepper').hidden = deVida;
+    $('l-pagos').textContent = vit ? 'Pago de primas' : 'Años de pago de primas';
     var plazo = Number(sel.value);
     var maxP = vit ? (edadOk ? C.maxPagos('vitalicio', edad) : 20) : plazo;
     maxP = Math.max(maxP, 1);
@@ -310,11 +315,16 @@
       pagosField.value = String(maxP);
       pagosAjuste = String(maxP);
     }
-    $('n-pagos').textContent = (pagosAjuste ? 'Ajustamos a ' + pagosAjuste + ' años. ' : '') + (vit
-      ? 'De 1 a ' + maxP + ' años: los pagos terminan a más tardar a los ' + L.finMax + '.'
-      : 'De 1 a ' + maxP + ' años: no puede pasar del plazo de protección.');
+    $('n-pagos').textContent = deVida ? 'Pagas tu prima cada año mientras tengas la póliza.'
+      : (pagosAjuste ? 'Ajustamos a ' + pagosAjuste + ' años. ' : '') + (vit
+        ? 'De 1 a ' + maxP + ' años: los pagos terminan a más tardar a los ' + L.finMax + '.'
+        : 'De 1 a ' + maxP + ' años: no puede pasar del plazo de protección.');
   }
   var pagosTxt = function (n) { return n + (n === 1 ? ' pago' : ' pagos'); };
+  var pagosDe = function (r) { return r.pagosDeVida ? 'pagos de por vida' : pagosTxt(r.pagos); };
+  var condiciones = function (lista) {
+    return lista.length ? lista.map(function (k) { return C.EXTRAPRIMAS[k].nombre; }).join(', ') : 'Ninguna';
+  };
 
   function buildMessage(d, r) {
     var lineas = [
@@ -323,9 +333,9 @@
       '• Edad: ' + d.edad + ' años · ' + (d.sexo === 'F' ? 'Mujer' : 'Hombre') + ' · ' + (d.fumador ? 'Fumador' : 'No fumador') + ' · ' + (d.deportista ? 'Hace deporte' : 'No hace deporte'),
       '• Suma asegurada: ' + money(d.suma, d.moneda),
       d.producto === 'vitalicio'
-        ? '• Protección: toda la vida · ' + pagosTxt(r.pagos) + ' anuales'
+        ? '• Protección: toda la vida · ' + (r.pagosDeVida ? 'pagos anuales de por vida' : pagosTxt(r.pagos) + ' anuales')
         : '• Plazo: ' + d.plazo + ' años · ' + pagosTxt(r.pagos) + ' anuales',
-      '• Padecimiento: ' + C.EXTRAPRIMAS[d.padecimiento].nombre,
+      '• Condiciones médicas: ' + condiciones(d.padecimientos),
       '• Prima anual estimada: ' + money(r.primaAnual, d.moneda) + (d.moneda !== 'MXN' ? ' (' + money(r.primaAnualMXN, 'MXN') + ')' : ''),
       '• Pago único equivalente: ' + money(r.pnu, d.moneda)
     ];
@@ -349,7 +359,7 @@
       $('r-anual').textContent = '—';
       $('peek-price').textContent = 'Revisa tus datos';
       ['r-unica', 'r-pagos', 'r-cobertura'].forEach(function (id) { $(id).textContent = '—'; });
-      $('r-anual-mxn').hidden = true; $('r-ahorro-row').hidden = true; $('r-extra-row').hidden = true;
+      $('r-anual-mxn').hidden = true; $('r-ahorro-row').hidden = true; $('r-extra-row').hidden = true; $('r-incl').textContent = '';
       $('r-compare').innerHTML = '';
       wa.setAttribute('aria-disabled', 'true'); wa.href = 'https://wa.me/' + WHATSAPP;
       lastText = '';
@@ -372,12 +382,13 @@
     mx.hidden = d.moneda === 'MXN';
     if (!mx.hidden) mx.textContent = 'Equivale a ' + money(r.primaAnualMXN, 'MXN') + ' al año (tipo de cambio ' + C.TIPO_CAMBIO[d.moneda].valor + ').';
     $('r-unica').textContent = money(r.pnu, d.moneda);
-    $('r-pagos').textContent = r.pagos;
+    $('r-pagos').textContent = r.pagosDeVida ? 'De por vida' : r.pagos;
+    $('r-incl').textContent = 'Incluye ' + Math.round(r.recargo * 100) + '% de gastos administrativos. Prima pura: ' + money(r.primaAnualPura, d.moneda) + ' al año.';
     $('r-cobertura').textContent = d.producto === 'vitalicio' ? 'Toda la vida' : 'Hasta los ' + (d.edad + d.plazo) + ' años';
     $('r-ahorro-row').hidden = d.producto !== 'dotal';
     $('r-ahorro').textContent = money(d.suma, d.moneda);
     $('r-extra-row').hidden = !r.extraprima;
-    $('r-extra').textContent = '+' + Math.round(r.extraprima * 100) + '% sobre la cobertura';
+    $('r-extra').textContent = '+' + Math.round(r.extraprima * 100) + '% por condiciones médicas';
 
     var cmp = $('r-compare');
     cmp.innerHTML = '';
@@ -397,9 +408,10 @@
         var o = Object.assign({}, d, { producto: p });
         if (p !== 'vitalicio' && validos.indexOf(d.plazo) === -1) o.plazo = validos[validos.length - 1];
         // Mismos años de pago, sin pasar del máximo de cada seguro
-        o.pagos = Math.min(d.pagos, C.maxPagos(p, d.edad, o.plazo));
+        if (d.pagos === 'vida') o.pagos = p === 'vitalicio' ? 'vida' : o.plazo;
+        else o.pagos = Math.min(d.pagos, C.maxPagos(p, d.edad, o.plazo));
         var rr = C.cotizar(o);
-        var base = p === 'vitalicio' ? pagosTxt(rr.pagos)
+        var base = p === 'vitalicio' ? pagosDe(rr)
           : o.plazo + ' años' + (rr.pagos !== o.plazo ? ', ' + pagosTxt(rr.pagos) : '');
         li.innerHTML = '<span class="dot dot-' + p + '"></span><span>' + CORTO[p] + ' <small>· ' + base + '</small></span><b>' + money(rr.primaAnual, d.moneda) + '/año</b>';
       }
@@ -422,7 +434,7 @@
   });
   form.addEventListener('change', function (e) {
     // Al cambiar de seguro, los años de pago vuelven a su valor natural (todo el plazo, o 20 en VITAE Siempre)
-    if (e.target.name === 'producto') { pagosTocados = false; pagosAjuste = ''; }
+    if (e.target.name === 'producto') { pagosTocados = false; pagosAjuste = ''; $('q-pv-vida').checked = true; }
     render(true, e.target);
   });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
@@ -466,7 +478,7 @@
   document.querySelectorAll('[data-producto]').forEach(function (a) {
     a.addEventListener('click', function () {
       var r = $('q-' + a.getAttribute('data-producto'));
-      if (r) { r.checked = true; pagosTocados = false; pagosAjuste = ''; render(false); }
+      if (r) { r.checked = true; pagosTocados = false; pagosAjuste = ''; $('q-pv-vida').checked = true; render(false); }
     });
   });
 

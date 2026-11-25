@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=202611251726">
+  <link rel="stylesheet" href="css/styles.css?v=202611251811">
 </head>
 <body>
   <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -71,15 +71,15 @@
 
         <aside class="sample enter enter-3" aria-label="Ejemplo de cotización de seguro de vida">
           <p class="sample-title">Ejemplo de cotización</p>
-          <p class="sample-who"><strong>Andrea, 34 años.</strong> Tiene dos hijos pequeños, no fuma, hace deporte y tiene hipotiroidismo controlado. Quiere proteger a su familia y juntar para la universidad de sus hijos.</p>
-          <p class="sample-plan">VITAE Tranquilidad · 20 años de protección, pagando en 15 · Suma asegurada de $600,000 MXN</p>
-          <p class="sample-price"><span id="sample-anual">$18,643</span> <small>MXN al año</small></p>
+          <p class="sample-who"><strong>Andrea, 34 años.</strong> Tiene dos hijos pequeños, no fuma, hace deporte y tiene hipertiroidismo controlado. Quiere proteger a su familia y juntar para la universidad de sus hijos.</p>
+          <p class="sample-plan">VITAE Tranquilidad · 20 años de protección y de pago · Suma asegurada de $500,000 MXN</p>
+          <p class="sample-price"><span id="sample-anual">$39,789</span> <small>MXN al año</small></p>
           <dl class="sample-rows">
-            <div><dt>Pago único equivalente<span class="dt-hint">Si prefieres pagar todo de una vez</span></dt><dd id="sample-unica">$191,086 MXN</dd></div>
-            <div><dt>Si llega a los 54 años</dt><dd>Ella recibe $600,000</dd></div>
-            <div><dt>Si fallece antes</dt><dd>Sus hijos reciben $600,000</dd></div>
+            <div><dt>Pago único equivalente<span class="dt-hint">Si prefieres pagar todo de una vez</span></dt><dd id="sample-unica">$517,387 MXN</dd></div>
+            <div><dt>Si llega a los 54 años</dt><dd>Ella recibe $500,000</dd></div>
+            <div><dt>Si fallece antes</dt><dd>Sus hijos reciben $500,000</dd></div>
           </dl>
-          <p class="sample-note">Prima neta estimada con la tarifa de VITAE. Incluye la extraprima del 25% por hipotiroidismo y el ajuste por hacer deporte.</p>
+          <p class="sample-note">Prima estimada con la tarifa de VITAE. Incluye los gastos administrativos, la extraprima del 25% por hipertiroidismo y el ajuste por hacer deporte.</p>
         </aside>
       </div>
     </section>
@@ -232,20 +232,20 @@
               </fieldset>
             </div>
 
-            <div class="field">
-                <label for="q-padec">Padecimiento diagnosticado</label>
-                <select id="q-padec" name="padecimiento">
-                  <option value="ninguno">Ninguno</option>
-                  <option value="E000001">Hipotiroidismo</option>
-                  <option value="E000002">Asma crónica</option>
-                  <option value="E000003">Dislipidemia</option>
-                  <option value="E000004">Diabetes tipo 2</option>
-                  <option value="E000005">Obesidad</option>
-                  <option value="E000006">Cardiopatía controlada</option>
-                  <option value="E000007">Enfermedad renal crónica</option>
-                  <option value="E000008">Hipertensión</option>
-                </select>
-            </div>
+            <fieldset class="checks-field" id="q-padec">
+              <legend>Condiciones médicas diagnosticadas</legend>
+              <p class="field-note" id="n-padec">Marca todas las que tengas. Si no tienes ninguna, déjalas sin marcar.</p>
+              <div class="checks">
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000005"><span>Obesidad</span><small>+40%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000002"><span>Asma crónica controlada</span><small>+35%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000003"><span>Dislipidemia</span><small>+34%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000004"><span>Diabetes tipo II controlada</span><small>+80%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000006"><span>Cardiopatía coronaria estable</span><small>+100%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000007"><span>Enfermedad renal crónica</span><small>+32%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000008"><span>Hipertensión controlada</span><small>+30%</small></label>
+                <label class="check"><input type="checkbox" name="padecimiento" value="E000001"><span>Hipertiroidismo</span><small>+25%</small></label>
+              </div>
+            </fieldset>
 
             <div class="row row-money">
               <div class="field">
@@ -276,8 +276,12 @@
             </div>
 
             <div class="field" id="pagos-field">
-              <label for="q-pagos">Años de pago de primas</label>
-              <div class="stepper">
+              <label for="q-pagos" id="l-pagos">Años de pago de primas</label>
+              <div class="seg seg-2" id="pagos-modo" role="radiogroup" aria-label="Forma de pago en VITAE Siempre" hidden>
+                <input type="radio" name="pagosmodo" id="q-pv-vida" value="vida" checked><label for="q-pv-vida">De por vida</label>
+                <input type="radio" name="pagosmodo" id="q-pv-anios" value="anios"><label for="q-pv-anios">Elegir años</label>
+              </div>
+              <div class="stepper" id="pagos-stepper">
                 <button type="button" class="step-btn" data-step="-1" aria-label="Un año de pago menos">−</button>
                 <input id="q-pagos" name="pagos" type="number" inputmode="numeric" min="1" max="20" step="1" value="20" required aria-describedby="n-pagos e-pagos">
                 <button type="button" class="step-btn" data-step="1" aria-label="Un año de pago más">+</button>
@@ -297,12 +301,13 @@
             <p class="result-label">Tu prima anual estimada</p>
             <p class="result-price"><span id="r-anual">—</span> <small id="r-anual-cur">MXN</small></p>
             <p class="result-mxn" id="r-anual-mxn" hidden></p>
+            <p class="result-incl" id="r-incl"></p>
             <dl class="result-rows">
               <div><dt>Pago único equivalente<span class="dt-hint">Si prefieres pagar todo de una vez</span></dt><dd id="r-unica">—</dd></div>
               <div><dt>Pagos anuales</dt><dd id="r-pagos">—</dd></div>
               <div><dt>Protección</dt><dd id="r-cobertura">—</dd></div>
               <div id="r-ahorro-row" hidden><dt>Recibes al terminar el plazo</dt><dd id="r-ahorro">—</dd></div>
-              <div id="r-extra-row" hidden><dt>Extraprima por padecimiento</dt><dd id="r-extra">—</dd></div>
+              <div id="r-extra-row" hidden><dt>Extraprima médica</dt><dd id="r-extra">—</dd></div>
             </dl>
 
             <div class="result-compare">
@@ -476,11 +481,11 @@
           </details>
           <details>
             <summary>¿Por qué el precio del cotizador es una estimación?</summary>
-            <p>El cotizador calcula la prima neta con la nota técnica de VITAE: tu edad, sexo, si fumas, si haces deporte, tu padecimiento declarado, la suma asegurada, la moneda, el plazo y los años de pago. La prima final suma los gastos de adquisición y administración de la póliza y se confirma al evaluar tu solicitud.</p>
+            <p>El cotizador usa la tarifa de VITAE con tu edad, sexo, si fumas, si haces deporte, tus condiciones médicas, la suma asegurada, la moneda, el plazo y los años de pago, e incluye los gastos administrativos de cada seguro. La prima final se confirma al evaluar tu solicitud, con tu información de salud y tus actividades.</p>
           </details>
           <details>
             <summary>¿Puedo pagar mi seguro en menos años?</summary>
-            <p>Sí. Eliges en cuántos años pagar tus primas, desde 1 año hasta el plazo de protección; en VITAE Siempre, los pagos terminan a más tardar a los 85 años. Al pagar en menos años, cada pago anual es mayor, pero terminas de pagar antes y tu protección sigue hasta el final del plazo.</p>
+            <p>Sí. En VITAE Protege y VITAE Tranquilidad eliges en cuántos años pagar, desde 1 año hasta el plazo de protección. En VITAE Siempre puedes pagar de por vida o elegir un número de años, con pagos que terminan a más tardar a los 85. Al pagar en menos años, cada pago anual es mayor, pero terminas de pagar antes y tu protección sigue igual.</p>
           </details>
           <details>
             <summary>¿Por qué me preguntan si hago deporte?</summary>
@@ -496,8 +501,8 @@
           </details>
           <details>
             <summary>¿Y si no aparece mi preexistencia en el cotizador?</summary>
-            <p>El cotizador en línea incluye los padecimientos con extraprima definida en nuestra nota técnica: hipotiroidismo, asma crónica, dislipidemia, diabetes tipo 2, obesidad, cardiopatía controlada, enfermedad renal crónica e hipertensión. Si el tuyo no aparece, no significa que no puedas asegurarte.</p>
-            <p>Escríbenos por WhatsApp al <strong class="nowrap">56 12 51 65 26</strong> o a <strong>vitae.support@gmail.com</strong> con tu padecimiento, desde cuándo lo tienes y cómo lo controlas, y nuestro equipo revisará tu caso de forma personal. Cada caso se valora según el diagnóstico, su control y la información médica disponible. Mientras tanto, puedes cotizar con "Ninguno" para tener una prima de referencia.</p>
+            <p>El cotizador en línea incluye las condiciones con extraprima definida en nuestra tarifa: obesidad, asma crónica controlada, dislipidemia, diabetes tipo II controlada, cardiopatía coronaria estable, enfermedad renal crónica, hipertensión controlada e hipertiroidismo. Si tienes varias, márcalas todas. Si la tuya no aparece, no significa que no puedas asegurarte.</p>
+            <p>Escríbenos por WhatsApp al <strong class="nowrap">56 12 51 65 26</strong> o a <strong>vitae.support@gmail.com</strong> con tu padecimiento, desde cuándo lo tienes y cómo lo controlas, y nuestro equipo revisará tu caso de forma personal. Cada caso se valora según el diagnóstico, su control y la información médica disponible. Mientras tanto, puedes cotizar sin marcarla para tener una prima de referencia.</p>
           </details>
           <details>
             <summary>¿Cuánto tarda el pago de un siniestro?</summary>
@@ -535,13 +540,13 @@
       </div>
     </div>
     <div class="wrap legal">
-      <p>La información de este sitio es descriptiva. Las coberturas, exclusiones, plazos y condiciones aplicables son las establecidas en la póliza y sus condiciones generales. Las primas del cotizador son estimaciones netas.</p>
+      <p>La información de este sitio es descriptiva. Las coberturas, exclusiones, plazos y condiciones aplicables son las establecidas en la póliza y sus condiciones generales. Las primas del cotizador son estimaciones e incluyen gastos administrativos.</p>
       <p>© <span id="year">2026</span> VITAE Seguros de Vida.</p>
     </div>
   </footer>
 
-  <script src="js/cotizador.js?v=202611251726"></script>
-  <script src="js/main.js?v=202611251726"></script>
-  <script src="js/chat.js?v=202611251726"></script>
+  <script src="js/cotizador.js?v=202611251811"></script>
+  <script src="js/main.js?v=202611251811"></script>
+  <script src="js/chat.js?v=202611251811"></script>
 </body>
 </html>
